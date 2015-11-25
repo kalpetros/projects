@@ -110,8 +110,8 @@ def testPairings():
     registerPlayer("Pinkie Pie")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(6, 4)
-    reportMatch(3, 7)
+    reportMatch(id1, id2)
+    reportMatch(id3, id4)
     pairings = swissPairings()
     if len(pairings) != 2:
         raise ValueError(

@@ -60,7 +60,7 @@ def registerPlayer(name):
     """
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
-    c.execute("INSERT INTO players (player) VALUES (%s)", (name,))
+    c.execute("INSERT INTO players (name) VALUES (%s)", (name,))
     DB.commit()
     DB.close()
 ####################
@@ -82,7 +82,7 @@ def playerStandings():
     """
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
-    c.execute("SELECT id, player, COALESCE(wins,0), COALESCE(matches,0) FROM standings") ### Create view in SQL and select from it ###
+    c.execute("SELECT id, name, wins, matches FROM standings")
     rows = c.fetchall()
     DB.commit()
     DB.close()
@@ -102,13 +102,11 @@ def reportMatch(winner, loser):
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
     c.execute("INSERT INTO matches (winner,loser) VALUES (%s,%s)", (winner,loser,))
-    #rows = c.fetchall()
-    #return rows
     DB.commit()
     DB.close()
-########################
-### WORK IN PROGRESS ###
-########################
+####################
+### PASSES TESTS ###
+####################
  
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
