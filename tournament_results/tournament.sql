@@ -8,12 +8,12 @@
 
 -- Initial commands
 -- Connect to database
-\c tournament;
+ \c tournament;
 -- Drop tables if they exist
 -- Drop players table
---DROP TABLE IF EXISTS players CASCADE;
+-- DROP TABLE IF EXISTS players CASCADE;
 -- Drop matches table
---DROP TABLE IF EXISTS matches CASCADE;
+-- DROP TABLE IF EXISTS matches CASCADE;
 
 -- Tables (players, matches)
 -- Create table players (id, player)
@@ -53,26 +53,3 @@ CREATE VIEW standings AS
 	LEFT JOIN loses
 	ON players.id = loses.id
 	ORDER BY players.id ASC;
-
--- Tests
---INSERT INTO players (name) VALUES ('Petros'); --1
---INSERT INTO players (name) VALUES ('Manos'); --2
---INSERT INTO players (name) VALUES ('Antonis'); --3
---INSERT INTO players (name) VALUES ('John'); --4
---INSERT INTO players (name) VALUES ('Michael'); --5
---INSERT INTO players (name) VALUES ('Brad'); --6
---INSERT INTO players (name) VALUES ('Joseph'); --7
---INSERT INTO players (name) VALUES ('Will'); --8
-
---INSERT INTO matches (winner,loser) VALUES (1,2);
---INSERT INTO matches (winner,loser) VALUES (3,4);
---INSERT INTO matches (winner,loser) VALUES (6,7);
---INSERT INTO matches (winner,loser) VALUES (1,5);
---INSERT INTO matches (winner,loser) VALUES (2,1);
---INSERT INTO matches (winner,loser) VALUES (3,1);
-
-SELECT * FROM players;
-SELECT * FROM matches;
-SELECT * FROM wins;
-SELECT * FROM loses;
-SELECT * FROM standings;

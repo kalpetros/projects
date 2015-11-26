@@ -8,12 +8,10 @@ def testDeleteMatches():
     deleteMatches()
     print "1. Old matches can be deleted."
 
-
 def testDelete():
     deleteMatches()
     deletePlayers()
     print "2. Player records can be deleted."
-
 
 def testCount():
     deleteMatches()
@@ -26,7 +24,6 @@ def testCount():
         raise ValueError("After deleting, countPlayers should return zero.")
     print "3. After deleting, countPlayers() returns zero."
 
-
 def testRegister():
     deleteMatches()
     deletePlayers()
@@ -36,7 +33,6 @@ def testRegister():
         raise ValueError(
             "After one player registers, countPlayers() should be 1.")
     print "4. After registering a player, countPlayers() returns 1."
-
 
 def testRegisterCountDelete():
     deleteMatches()
@@ -54,7 +50,6 @@ def testRegisterCountDelete():
     if c != 0:
         raise ValueError("After deleting, countPlayers should return zero.")
     print "5. Players can be registered and deleted."
-
 
 def testStandingsBeforeMatches():
     deleteMatches()
@@ -78,7 +73,6 @@ def testStandingsBeforeMatches():
                          "even if they have no matches played.")
     print "6. Newly registered players appear in the standings with no matches."
 
-
 def testReportMatches():
     deleteMatches()
     deletePlayers()
@@ -99,7 +93,6 @@ def testReportMatches():
         elif i in (id2, id4) and w != 0:
             raise ValueError("Each match loser should have zero wins recorded.")
     print "7. After a match, players have updated standings."
-
 
 def testPairings():
     deleteMatches()
@@ -124,7 +117,6 @@ def testPairings():
             "After one match, players with one win should be paired.")
     print "8. After one match, players with one win are paired."
 
-
 if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
@@ -135,5 +127,3 @@ if __name__ == '__main__':
     testReportMatches()
     testPairings()
     print "Success!  All tests pass!"
-
-

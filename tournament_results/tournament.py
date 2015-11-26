@@ -9,9 +9,6 @@ import psycopg2
 def DBect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament")
-####################
-### PASSES TESTS ###
-####################
 
 def deleteMatches():
     """Remove all the match records from the database."""
@@ -20,9 +17,6 @@ def deleteMatches():
     c.execute("DELETE FROM matches")
     DB.commit() 
     DB.close()
-####################
-### PASSES TESTS ###
-####################
 
 def deletePlayers():
     """Remove all the player records from the database."""
@@ -31,9 +25,6 @@ def deletePlayers():
     c.execute("DELETE FROM players")
     DB.commit()
     DB.close()
-####################
-### PASSES TESTS ###
-####################
 
 def countPlayers():
     """Returns the number of players currently registered."""
@@ -45,9 +36,6 @@ def countPlayers():
     DB.close()
     for row in rows:
     	return row[0]
-####################
-### PASSES TESTS ###
-####################
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -63,9 +51,6 @@ def registerPlayer(name):
     c.execute("INSERT INTO players (name) VALUES (%s)", (name,))
     DB.commit()
     DB.close()
-####################
-### PASSES TESTS ###
-####################
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
@@ -87,10 +72,6 @@ def playerStandings():
     DB.commit()
     DB.close()
     return rows
-    #print "Count players is returning: {}".format(rows) ### Test
-####################
-### PASSES TESTS ###
-####################
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -104,10 +85,7 @@ def reportMatch(winner, loser):
     c.execute("INSERT INTO matches (winner,loser) VALUES (%s,%s)", (winner,loser,))
     DB.commit()
     DB.close()
-####################
-### PASSES TESTS ###
-####################
- 
+
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
   
@@ -123,5 +101,21 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
-
+    DB = psycopg2.connect("dbname=tournament")
+    c = DB.cursor()
+    c.execute("SELECT * FROM standings")
+    rows = c.fetchall()
+    DB.commit()
+    DB.close()
+    pairings = []
+    pid1 = rows[0][0]
+    pname1 = rows[0][1]
+    pid2 = rows[0 + 1][0]
+    pname2 = rows[0 + 1][1]
+    pid3 = rows[2][0]
+    pname3 = rows[2][1]
+    pid4 = rows[3][0]
+    pname4 = rows[3][1]
+    pairings.append((pid1, pname1, pid3, pname3))
+    pairings.append((pid2, pname2, pid4, pname4))
+    return pairings
