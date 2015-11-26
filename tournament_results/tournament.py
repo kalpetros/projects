@@ -6,13 +6,13 @@
 import psycopg2
 
 
-def DBect():
+def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament")
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("DELETE FROM matches")
     DB.commit() 
@@ -20,15 +20,23 @@ def deleteMatches():
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("DELETE FROM players")
     DB.commit()
     DB.close()
 
+def deleteTournament():
+    """Remove all the tournament records from the database."""
+    DB = connect()
+    c = DB.cursor()
+    c.execute("DELETE FROM tournament")
+    DB.commit()
+    DB.close()
+
 def countPlayers():
     """Returns the number of players currently registered."""
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("SELECT count(*) FROM players")
     rows = c.fetchall()
@@ -46,7 +54,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("INSERT INTO players (name) VALUES (%s)", (name,))
     DB.commit()
@@ -65,7 +73,7 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("SELECT id, name, wins, matches FROM standings")
     rows = c.fetchall()
@@ -80,11 +88,22 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("INSERT INTO matches (winner,loser) VALUES (%s,%s)", (winner,loser,))
     DB.commit()
     DB.close()
+
+def preventRematches(player1, player2):
+	"""Checks if two players have already played against each other
+	Args:
+		player1: the id number of first player to check
+		player2: the id number of second player to check
+	Return false if players have already played against each other, true if not
+	"""
+##############################
+###### WORK IN PROGRESS ######
+##############################
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -101,21 +120,23 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-    DB = psycopg2.connect("dbname=tournament")
+    DB = connect()
     c = DB.cursor()
     c.execute("SELECT * FROM standings")
     rows = c.fetchall()
+    pairings = []
+    i = 0
+    rowslength = len(rows)
+    while i < rowslength/2:
+    	pid1 = rows[i][0]
+    	pname1 = rows[i][1]
+    	pid2 = rows[i+2][0]
+    	pname2 = rows[i+2][1]
+    	pairings.append((pid1, pname1, pid2, pname2))
+    	# Inserts matches between players into tournament database
+    	c.execute("INSERT INTO tournament VALUES (%s,%s,%s,%s)", (pid1,pname1,pid2,pname2,))
+    	i = i + 1
     DB.commit()
     DB.close()
-    pairings = []
-    pid1 = rows[0][0]
-    pname1 = rows[0][1]
-    pid2 = rows[0 + 1][0]
-    pname2 = rows[0 + 1][1]
-    pid3 = rows[2][0]
-    pname3 = rows[2][1]
-    pid4 = rows[3][0]
-    pname4 = rows[3][1]
-    pairings.append((pid1, pname1, pid3, pname3))
-    pairings.append((pid2, pname2, pid4, pname4))
     return pairings
+	

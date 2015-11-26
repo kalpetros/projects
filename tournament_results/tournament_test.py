@@ -97,14 +97,22 @@ def testReportMatches():
 def testPairings():
     deleteMatches()
     deletePlayers()
+    deleteTournament()
     registerPlayer("Twilight Sparkle")
     registerPlayer("Fluttershy")
     registerPlayer("Applejack")
     registerPlayer("Pinkie Pie")
+    # Extra players for testing purposes
+    registerPlayer("Megalodonton")
+    registerPlayer("Butteryscotch")
+    registerPlayer("Megatron")
+    registerPlayer("Uranus")
     standings = playerStandings()
-    [id1, id2, id3, id4] = [row[0] for row in standings]
+    [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
     reportMatch(id1, id2)
     reportMatch(id3, id4)
+    reportMatch(id5, id6)
+    reportMatch(id7, id8)
     pairings = swissPairings()
     if len(pairings) != 2:
         raise ValueError(
