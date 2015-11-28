@@ -29,13 +29,6 @@ CREATE TABLE matches (
 	loser INTEGER references players(id)
 );
 
-CREATE TABLE tournament (
-	id1 SERIAL,
-	name1 TEXT,
-	id2 SERIAL,
-	name2 TEXT
-);
-
 -- Create view wins (id, player, wins)
 CREATE VIEW wins AS
 	SELECT players.id, players.name,

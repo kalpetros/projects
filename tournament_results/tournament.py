@@ -94,16 +94,22 @@ def reportMatch(winner, loser):
     DB.commit()
     DB.close()
 
-def preventRematches(player1, player2):
+def checkRematches():
 	"""Checks if two players have already played against each other
 	Args:
 		player1: the id number of first player to check
 		player2: the id number of second player to check
 	Return false if players have already played against each other, true if not
 	"""
-##############################
-###### WORK IN PROGRESS ######
-##############################
+	DB = connect()
+	c = DB.cursor()
+	c.execute("SELECT winner+loser as sum, count(*) FROM matches GROUP BY sum")
+	rows = c.fetchall()
+	DB.commit()
+	DB.close()
+	for row in rows:
+		if row[1] > 1:
+			return False
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -133,8 +139,6 @@ def swissPairings():
     	pid2 = rows[i+2][0]
     	pname2 = rows[i+2][1]
     	pairings.append((pid1, pname1, pid2, pname2))
-    	# Inserts matches between players into tournament database
-    	c.execute("INSERT INTO tournament VALUES (%s,%s,%s,%s)", (pid1,pname1,pid2,pname2,))
     	i = i + 1
     DB.commit()
     DB.close()

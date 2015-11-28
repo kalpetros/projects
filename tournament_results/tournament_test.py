@@ -102,17 +102,10 @@ def testPairings():
     registerPlayer("Fluttershy")
     registerPlayer("Applejack")
     registerPlayer("Pinkie Pie")
-    # Extra players for testing purposes
-    registerPlayer("Megalodonton")
-    registerPlayer("Butteryscotch")
-    registerPlayer("Megatron")
-    registerPlayer("Uranus")
     standings = playerStandings()
-    [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
+    [id1, id2, id3, id4] = [row[0] for row in standings]
     reportMatch(id1, id2)
     reportMatch(id3, id4)
-    reportMatch(id5, id6)
-    reportMatch(id7, id8)
     pairings = swissPairings()
     if len(pairings) != 2:
         raise ValueError(
@@ -125,6 +118,13 @@ def testPairings():
             "After one match, players with one win should be paired.")
     print "8. After one match, players with one win are paired."
 
+def testRematches():
+	rematches = checkRematches()
+	if rematches == False:
+		raise ValueError(
+			"Rematches found!")
+	print "9. No players have any rematches."
+
 if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
@@ -134,4 +134,5 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
+    testRematches()
     print "Success!  All tests pass!"
