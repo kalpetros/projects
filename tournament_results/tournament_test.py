@@ -97,7 +97,6 @@ def testReportMatches():
 def testPairings():
     deleteMatches()
     deletePlayers()
-    deleteTournament()
     registerPlayer("Twilight Sparkle")
     registerPlayer("Fluttershy")
     registerPlayer("Applejack")
@@ -119,11 +118,12 @@ def testPairings():
     print "8. After one match, players with one win are paired."
 
 def testRematches():
-	rematches = checkRematches()
-	if rematches == False:
-		raise ValueError(
-			"Rematches found!")
-	print "9. No players have any rematches."
+    deleteTournament()
+    rematches = checkRematches()
+    if rematches == False:
+        raise ValueError(
+            "Rematches found!")
+    print "9. No players have any rematches."
 
 if __name__ == '__main__':
     testDeleteMatches()

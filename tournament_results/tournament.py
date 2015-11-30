@@ -27,7 +27,6 @@ def deletePlayers():
     DB.close()
 
 def deleteTournament():
-    """Remove all the tournament records from the database."""
     DB = connect()
     c = DB.cursor()
     c.execute("DELETE FROM tournament")
@@ -39,11 +38,9 @@ def countPlayers():
     DB = connect()
     c = DB.cursor()
     c.execute("SELECT count(*) FROM players")
-    rows = c.fetchall()
-    DB.commit()
+    rows = c.fetchone()
     DB.close()
-    for row in rows:
-    	return row[0]
+    return rows[0]
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -77,7 +74,6 @@ def playerStandings():
     c = DB.cursor()
     c.execute("SELECT id, name, wins, matches FROM standings")
     rows = c.fetchall()
-    DB.commit()
     DB.close()
     return rows
 
@@ -93,23 +89,6 @@ def reportMatch(winner, loser):
     c.execute("INSERT INTO matches (winner,loser) VALUES (%s,%s)", (winner,loser,))
     DB.commit()
     DB.close()
-
-def checkRematches():
-	"""Checks if two players have already played against each other
-	Args:
-		player1: the id number of first player to check
-		player2: the id number of second player to check
-	Return false if players have already played against each other, true if not
-	"""
-	DB = connect()
-	c = DB.cursor()
-	c.execute("SELECT winner+loser as sum, count(*) FROM matches GROUP BY sum")
-	rows = c.fetchall()
-	DB.commit()
-	DB.close()
-	for row in rows:
-		if row[1] > 1:
-			return False
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -133,14 +112,45 @@ def swissPairings():
     pairings = []
     i = 0
     rowslength = len(rows)
-    while i < rowslength/2:
+    while i < rowslength:
     	pid1 = rows[i][0]
     	pname1 = rows[i][1]
-    	pid2 = rows[i+2][0]
-    	pname2 = rows[i+2][1]
+    	pid2 = rows[i+1][0]
+    	pname2 = rows[i+1][1]
     	pairings.append((pid1, pname1, pid2, pname2))
-    	i = i + 1
-    DB.commit()
+    	i = i + 2
     DB.close()
     return pairings
-	
+
+    """
+    pairingsSum = pid1+pid2
+        c.execute("SELECT winner+loser as sum, count(*) FROM matches GROUP BY sum")
+        m_rows = c.fetchall()
+        for row in m_rows:
+            if pairingsSum == row[0]:
+                return "False"
+            else:
+                pairings.append((pid1, pname1, pid2, pname2))
+    """
+
+def checkRematches():
+    """Checks if two players have already played against each other
+    Args:
+        player1: the id number of first player to check
+        player2: the id number of second player to check
+    Return false if players have already played against each other, true if not
+    """
+    matches = swissPairings()
+    DB = connect()
+    c = DB.cursor()
+    c.execute("SELECT winner+loser as sum FROM matches")
+    rows = c.fetchall()
+    i = 0
+    for row in rows:
+        if row[0] != matches[i][0]+matches[i][2]:
+            c.execute("INSERT INTO tournament VALUES (%s,%s,%s,%s)", (matches[i][0],matches[i][1],matches[i][2],matches[i][3],))
+            DB.commit()
+        else:
+            return False
+        i = i + 1
+    DB.close()
