@@ -122,17 +122,6 @@ def swissPairings():
     DB.close()
     return pairings
 
-    """
-    pairingsSum = pid1+pid2
-        c.execute("SELECT winner+loser as sum, count(*) FROM matches GROUP BY sum")
-        m_rows = c.fetchall()
-        for row in m_rows:
-            if pairingsSum == row[0]:
-                return "False"
-            else:
-                pairings.append((pid1, pname1, pid2, pname2))
-    """
-
 def checkRematches():
     """Checks if two players have already played against each other
     Args:
