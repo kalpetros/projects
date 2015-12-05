@@ -105,6 +105,12 @@ shelters = session.query(Shelter.name, Shelter.max_capacity).all()
 for shelter in shelters:
 	print "Maximum capacity of shelter (%s) is %s" % (shelter[0], shelter[1])
 
+# Return number of puppies that are not adopted
+adopters = session.query(Shelter).all()
+# Print puppies and their adopter
+for adopter in adopters:
+	print "Current occupancy of shelter %s is %s" %(adopter.name, adopter.current_occupancy)
+
 ########################################
 ########################################
 ############## Exercise 5 ##############
