@@ -15,7 +15,7 @@ DBSession = sessionmaker(bind=engine)
 
 session = DBSession()
 
-#Add Shelters
+# Add Shelters
 shelter1 = Shelter(name = "Oakland Animal Services", address = "1101 29th Ave", city = "Oakland", state = "California", zipCode = "94601", website = "oaklandanimalservices.org", max_capacity = 20, current_occupancy = 20)
 session.add(shelter1)
 
@@ -31,7 +31,7 @@ session.add(shelter4)
 shelter5 = Shelter(name = "Palo Alto Humane Society" ,address = "1149 Chestnut St." ,city = "Menlo Park", state = "California" ,zipCode = "94025", website = "paloaltohumane.org", max_capacity = 20, current_occupancy = 20)
 session.add(shelter5)
 
-#Add Puppies
+# Add Puppies
 male_names = ["Bailey", "Max", "Charlie", "Buddy","Rocky","Jake", "Jack", "Toby", "Cody", "Buster", "Duke", "Cooper", "Riley", "Harley", "Bear", "Tucker", "Murphy", "Lucky", "Oliver", "Sam", "Oscar", "Teddy", "Winston", "Sammy", "Rusty", "Shadow", "Gizmo", "Bentley", "Zeus", "Jackson", "Baxter", "Bandit", "Gus", "Samson", "Milo", "Rudy", "Louie", "Hunter", "Casey", "Rocco", "Sparky", "Joey", "Bruno", "Beau", "Dakota", "Maximus", "Romeo", "Boomer", "Luke", "Henry"]
 
 female_names = ['Bella', 'Lucy', 'Molly', 'Daisy', 'Maggie', 'Sophie', 'Sadie', 'Chloe', 'Bailey', 'Lola', 'Zoe', 'Abby', 'Ginger', 'Roxy', 'Gracie', 'Coco', 'Sasha', 'Lily', 'Angel', 'Princess','Emma', 'Annie', 'Rosie', 'Ruby', 'Lady', 'Missy', 'Lilly', 'Mia', 'Katie', 'Zoey', 'Madison', 'Stella', 'Penny', 'Belle', 'Casey', 'Samantha', 'Holly', 'Lexi', 'Lulu', 'Brandy', 'Jasmine', 'Shelby', 'Sandy', 'Roxie', 'Pepper', 'Heidi', 'Luna', 'Dixie', 'Honey', 'Dakota']
@@ -49,14 +49,14 @@ number_of_males = len(male_names)
 number_of_females = len(female_names)
 number_of_puppies = number_of_males+number_of_females
 
-#This method will make a random age for each puppy between 0-18 months(approx.) old from the day the algorithm was run.
+# This method will make a random age for each puppy between 0-18 months(approx.) old from the day the algorithm was run.
 def CreateRandomAge():
 	today = datetime.date.today()
 	days_old = randint(0,540)
 	birthday = today - datetime.timedelta(days = days_old)
 	return birthday
 
-#This method will create a random weight between 1.0-40.0 pounds (or whatever unit of measure you prefer)
+# This method will create a random weight between 1.0-40.0 pounds (or whatever unit of measure you prefer)
 def CreateRandomWeight():
 	return random.uniform(1.0, 40.0)
 
