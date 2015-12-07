@@ -177,8 +177,8 @@ while reset == 0:
 
 	# Count puppies in each shelter
 	puppies = session.query(func.count(Puppy.name), Shelter.name).\
-			  join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
-			  group_by(Shelter.name).order_by(Shelter.id).all()
+		join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
+		group_by(Shelter.name).order_by(Shelter.id).all()
 
     # Check max capacity for the shelter
     # that the user has selected
@@ -189,18 +189,27 @@ while reset == 0:
 	# the max capacity and if yes add the new
 	# puppy in the shelter if not prompt user
 	# to select a different shelter
-	if puppies[puppy_shelter-1][0] < shelter_max_capacity:
+	if puppies[puppy_shelter-1][0] < 20:
 		# Adds the new puppy in the
 		# shelter the user specified
 		new_puppy = Puppy(name = puppy_name, gender = puppy_gender, dateOfBirth = CreateRandomAge(),picture=random.choice(puppy_images) ,shelter_id=puppy_shelter, weight= CreateRandomWeight())
 		session.add(new_puppy)
 		session.commit()
 		reset = 1
+
+		# Check current occupancy of the shelter
+		# that user has selected
+		puppies = session.query(func.count(Puppy.name), Shelter.name).\
+	    	join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
+			group_by(Shelter.name).order_by(Shelter.id).all()
+		print "There are %s puppies in the %s shelter after the adition of your puppy %s" %(puppies[puppy_shelter-1][0], puppies[puppy_shelter-1].name, puppy_name)
 	else:
 		print "The shelter you selected is full. Please select a different shelter or let the system select a shelter for you"
 
 		select_new_shelter = raw_input("Type Y(to secect a different shelter), N(to exit the selection) or A(to auto select) ")
 		check = 0
+		# Exits the loop if there are no vacancies in any shelter
+		commited = 0
 		while check == 0:
 			if select_new_shelter == "Y":
 				reset = 0
@@ -208,39 +217,48 @@ while reset == 0:
 			elif select_new_shelter == "N":
 				reset = 1
 				check = 1
-			############################################################################################
-  			############################################################################################
-  			##################################### WORK IN PROGRESS #####################################
-  			############################################################################################
-  			############################################################################################
 			elif select_new_shelter == "A":
 				# Check if there are vacancies in other
 				# shelters and add the puppy there
-				puppies = session.query(func.count(Puppy.name), Shelter.name).\
-			  			join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
-			  			group_by(Shelter.name).order_by(Shelter.id).all()
+				puppies = session.query(func.count(Puppy.name), Shelter.name, Shelter.id).\
+	  				join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
+			  		group_by(Shelter.name).order_by(Shelter.id).all()
 
-	  			for puppy in puppies:  					
-	  				if puppy[0] > 20:
-	  					print "OK"
-	  					check = 1
-					else:
-						print "Unfortunately at this time all shelters are full. Wait until a new one opens! (Hopefully in the next 2 months)"
-			############################################################################################
-  			############################################################################################
-  			##################################### WORK IN PROGRESS #####################################
-  			############################################################################################
-  			############################################################################################
+		  		# Adds the puppy in a random
+		  		# shelter (if there are any vacancies)
+	  			for puppy in puppies:
+	  				if puppy[0] < 20:
+	  					# Adds the new puppy in the
+						# shelter the user specified
+						new_puppy = Puppy(name = puppy_name, gender = puppy_gender, dateOfBirth = CreateRandomAge(),picture=random.choice(puppy_images),shelter_id=puppy[2], weight= CreateRandomWeight())
+						session.add(new_puppy)
+						session.commit()
+						reset = 1
+						check = 1
+						commited = 1
+						# Check current occupancy of the shelter
+						# that the system has selected
+						puppies = session.query(func.count(Puppy.name), Shelter.name, Shelter.id).\
+							join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
+  							group_by(Shelter.name).order_by(Shelter.id).all()
+						print "There are %s puppies in the %s shelter after the adition of your puppy %s" %(puppy[0]+1, puppy[1], puppy_name)
+						# Breaks the for loop
+						break
 			else:
 				select_new_shelter = raw_input("Wrong input! Please type Y(to secect a different shelter), N(to exit the selection) or A(to auto select) ")
 				check = 0
 
-	# Check current occupancy of the shelter
-	# that user has selected
-	puppies = session.query(func.count(Puppy.name), Shelter.name).\
-			  join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
-			  group_by(Shelter.name).order_by(Shelter.id).all()
-	print "There are %s puppies in the %s shelter after the adition of your puppy %s" %(puppies[puppy_shelter-1][0], puppies[puppy_shelter-1].name, puppy_name)
+			if commited == 0:
+				print "There are no empty shelters this time. Please be patient as new shelters will open."
+				reset = 1
+				check = 1
+
+	puppies = session.query(func.count(Puppy.name), Shelter.name, Shelter.id).\
+		join(Shelter).filter(Puppy.shelter_id==Shelter.id).\
+  		group_by(Shelter.name).order_by(Shelter.id).all()
+
+	for puppy in puppies:
+		print puppy
 
 ########################################
 ########################################
@@ -253,8 +271,8 @@ while reset == 0:
 ################## BUGS ##################
 ##########################################
 ##########################################
-## 1.under development - line 216
-## 2.add the new auto selected shelter in the output - line 243
+## 1.
+## 2.
 ## 3.
 ## 4.
 ## 5.
