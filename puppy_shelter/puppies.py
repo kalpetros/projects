@@ -36,6 +36,7 @@ class Puppy(Base):
     shelter = relationship(Shelter)
     weight = Column(Numeric(10))
     profile = relationship("Profile", uselist=False, backref="puppies")
+    adopter_id = Column(Integer, ForeignKey('adopters.id'))
     adopter = relationship("Adopter", secondary=adopt_puppy, backref="puppies")
 
 class Profile(Base):
