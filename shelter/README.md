@@ -1,7 +1,5 @@
-# Puppy Shelter
-Python module that uses the [SQLAlchemy](http://www.sqlalchemy.org/) ORM (Object Relational Mapper) to create a database for animal(puppies) shelters.
-
-Who doesn't like puppies?
+# Shelter
+Python module that uses the [SQLAlchemy](http://www.sqlalchemy.org/) ORM (Object Relational Mapper) to create a database for animal shelters.
 
 ## Set up the database
 
