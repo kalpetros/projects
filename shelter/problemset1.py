@@ -4,8 +4,8 @@
 ###########################################
 ###########################################
 import datetime
-from random import randint
 import random
+from random import randint
 # Necessary libraries to connect to
 # the database and create a session
 from sqlalchemy import create_engine
@@ -275,8 +275,24 @@ def exercise5():
 # Can also take an array of
 # adopter ids
 def AdoptPuppy(puppy_id,adopters_id):
-	print puppy_id
-	print adopters_id
+	puppies = session.query(Puppy).filter_by(id=puppy_id).all()
+
+	for puppy in puppies:
+		puppy.adopter_id = adopters_id
+		session.commit()
+
+	puppies = session.query(Puppy.name, Puppy.adopter_id).all()
+	for puppy in puppies:
+		print puppy
+
+# Get adopters name
+adopters_name = raw_input("What's your name? ")
+# Get puppy's id
+puppy_id = raw_input("Please enter the id of the puppy you want to adopt: ")
+# Get the adopters id from his name
+adopters = session.query(Adopter.id, Adopter.name).filter_by(name=adopters_name).order_by(Adopter.id).all()
+for adopter in adopters:
+	adopters_id = adopter.id
 
 #########################################
 #########################################
@@ -287,7 +303,7 @@ def AdoptPuppy(puppy_id,adopters_id):
 #exercise3()
 #exercise4()
 #exercise5()
-AdoptPuppy(23,41)
+AdoptPuppy(puppy_id,adopters_id)
 
 ##########################################
 ##########################################
