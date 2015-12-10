@@ -279,11 +279,10 @@ def AdoptPuppy(puppy_id,adopters_id):
 
 	for puppy in puppies:
 		puppy.adopter_id = adopters_id
+		puppy.shelter_id = 0
 		session.commit()
 
-	puppies = session.query(Puppy.name, Puppy.adopter_id).all()
-	for puppy in puppies:
-		print puppy
+	print "Congratulations %s for adopting %s" %(adopters_name, puppy.name)
 
 # Get adopters name
 adopters_name = raw_input("What's your name? ")
@@ -299,6 +298,7 @@ for adopter in adopters:
 ########### RUN THE EXERCISES ###########
 #########################################
 #########################################
+# Remove # to execute a method
 #exercise2()
 #exercise3()
 #exercise4()
