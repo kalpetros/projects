@@ -1,5 +1,5 @@
 # Projects
-This repo contains a list of small projects developed using
+This repository contains a list of small projects developed using
 various languages for learning purposes.
 
 | # | Name | Status | Made with | View online |
