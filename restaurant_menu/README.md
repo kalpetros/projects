@@ -11,6 +11,6 @@ This will create the database **restaurantmenu**
 
 ## Populate the database
 
-To populate the database with a list of puppies run:
+To populate the database with a list of restaurants run:
 
 `python lotsofrestaurants.py`
