@@ -1,16 +1,19 @@
-<html>
-  <body>
-    <h1>New Menu Item</h1>
-    <form action="{{url_for('newMenuItem', restaurant_id=restaurant_id )}}" method='POST'>
-      <input type='text' size='30' name='name', placeholder='Name'>
-      </br>
-      <input type='text' size='30' name='description', placeholder='Description'>
-      </br>
-      <input type='text' size='30' name='price', placeholder='Price'>
-      </br>
-      <input type='text' size='30' name='course', placeholder='Course'>
-      </br>
-	  <input type='submit' value='Create'>
-	</form>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+  <h1>Add a new menu item</h1>
+  <form action="{{url_for('newMenuItem', restaurant_id=restaurant_id)}}" method='POST'>
+    <input type='text' class="form-control" size='30' name='name', placeholder='Name'>
+    </br>
+    <input type='text' class="form-control" size='30' name='description', placeholder='Description'>
+    </br>
+    <div class="input-group">
+      <div class="input-group-addon">$</div>
+      <input type="text" class="form-control" name='price' placeholder="Price">
+      <div class="input-group-addon">.00</div>
+    </div>
+    </br>
+    <input type='text' class="form-control" size='30' name='course', placeholder='Course'>
+    </br>
+    <button type="submit" class="btn btn-default">Add</button>
+  </form>
+{% endblock %}

@@ -1,20 +1,7 @@
-body            { font-family: sans-serif; background-image: url('img3.jpg'); background-color: #333333}
-h1, h2, h3, h4       { color: #FFFFFF; }
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
-h1              { border-bottom: 2px solid #eee; }
-h2              { font-size: 1.2em; }
+body {
+	background-image: url('background.jpg');
+}
 
-p, dd, dt               { color: #CCCCCC;}
-
-a {text-decoration: none; color:#FFFFCC; font-size: .75em;}
-
-.flash          { background: #cee5F5; }
-
-.main {
-	width: 50%;
-	height: 100%;
-	margin-left: 25%;
-	text-align: center;
-	border-radius: 15px;
-	border: 1px solid white;
+h2 {
+	color: white;
 }
