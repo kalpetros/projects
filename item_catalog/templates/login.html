@@ -2,8 +2,12 @@
 {% block goback %}<a href="{{url_for('showRestaurant')}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
 {% block content %}
   <div class="panel panel-default">
-    <div class="panel-heading">Login</div>
-    <div class="panel-body">
+    <div class="panel-heading headerlogin" id="result"></div>
+    <div class="panel-body login">
+      <img src="http://images.clipartpanda.com/spoon-and-fork-png-45332.png" height="100px" width="100px">
+      <h1>Restaurant Catalog</h1>
+      <h3>A list of restaurants and their menus</h3>
+      <!-- Google Sign in Button -->
       <div id="signInButton">
   	    <span class="g-signin"
 		  data-scope="openid email"
@@ -14,13 +18,7 @@
 		  data-callback="signInCallback"
 		  data-approvalprompt="force">
 		</span>
-      </div>     
-	  <div class="facebook">
-	    <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-	      <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-	    </fb:login-button>
-	  </div>
-      <div id="result"></div>
+      </div>
       <!-- Google Login -->
 	  <script>
 	  function signInCallback(authResult) {
@@ -37,7 +35,7 @@
 			success: function(result) {
 			  // Handle or verify the server response if necessary.
 			  if (result) {
-			    $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+			    $('#result').html('Login Successful! '+ result + ' Redirecting...')
 			    setTimeout(function() {
 			      window.location.href = "/restaurants";
 			    }, 4000);
@@ -49,54 +47,6 @@
 		    }
 	      });
 	    }
-	  }
-	  </script>
-	  <!-- Facebook Login -->
-	  <script>
-	  window.fbAsyncInit = function() {
-	    FB.init({
-	      appId      : '846524132078825',
-	  	  cookie     : true,  // enable cookies to allow the server to access 
-	      // the session
-	      xfbml      : true,  // parse social plugins on this page
-	      version    : 'v2.2' // use version 2.2
-	    });
-	  };
-	  // Load the SDK asynchronously
-	  (function(d, s, id) {
-	    var js, fjs = d.getElementsByTagName(s)[0];
-	    if (d.getElementById(id)) return;
-	    js = d.createElement(s); js.id = id;
-	    js.src = "//connect.facebook.net/en_US/sdk.js";
-	    fjs.parentNode.insertBefore(js, fjs);
-	  }(document, 'script', 'facebook-jssdk'));
-	  // Here we run a very simple test of the Graph API after login is
-	  // successful.  See statusChangeCallback() for when this call is made.
-	  function sendTokenToServer() {
-	    var access_token = FB.getAuthResponse()['accessToken'];
-	    console.log(access_token)
-	    console.log('Welcome!  Fetching your information.... ');
-	    FB.api('/me', function(response) {
-	      console.log('Successful login for: ' + response.name);
-	      $.ajax({
-	        type: 'POST',
-	  	    url: '/fbconnect?state={{STATE}}',
-	        processData: false,
-	        data: access_token,
-	        contentType: 'application/octet-stream; charset=utf-8',
-	        success: function(result) {
-	        // Handle or verify the server response if necessary.
-	          if (result) {
-	            $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
-	            setTimeout(function() {
-	              window.location.href = "/restaurants";
-	            }, 4000);
-              } else {
-	            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
- 	          }
-	        }
-	      });
-	    });
 	  }
 	  </script>
     </div>

@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block addcontent %}<a href="{{url_for('newRestaurant')}}">Add Restaurant</a>{% endblock %}
 {% block content %}
-  <div class="row">
   <!-- Logical Code -->
   {% for restaurant in restaurants %}
   <div class="col-lg-4">

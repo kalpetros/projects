@@ -26,9 +26,17 @@ Base = declarative_base()
 ################### CLASS DEFINITIONS ###################
 #########################################################
 #########################################################
-# All code for out table and mapper code
+# All code for the table and mapper code
 # Two classes that correspond with the two
-# tables in the database (restaurant, menu item)
+# tables in the database (restaurant, menu item, user)
+class User(Base):
+	__tablename__ = 'user'
+
+	id = Column(Integer, primary_key=True)
+	name = Column(String(250), nullable=False)
+	email = Column(String(250), nullable=False)
+	picture = Column(String(250))
+
 class Restaurant(Base):
 # table representation
 # double underscore = lets SQLAlchemy know the
@@ -54,11 +62,17 @@ class Restaurant(Base):
 	id = Column(
 		Integer, primary_key = True)
 
+	user_id = Column(Integer, ForeignKey('user.id'))
+	user = relationship(User)
+
 	@property
 	def serialize(self):
 
 		return {
-			'name': self.name
+			'name': self.name,
+			'description': self.description,
+			'logo': self.logo,
+			'user_id': self.user_id
 		}
 
 class MenuItem(Base):
@@ -99,6 +113,9 @@ class MenuItem(Base):
 
 	restaurant = relationship(Restaurant)
 
+	user_id = Column(Integer, ForeignKey('user.id'))
+	user = relationship(User)
+
 # We added this serialize function to be able to send JSON objects in a
 # serializable format
 	@property
@@ -110,6 +127,7 @@ class MenuItem(Base):
 			'id': self.id,
 			'price': self.price,
 			'course': self.course,
+			'user_id': self.user_id
 		}
 
 #########################################################

@@ -9,7 +9,7 @@ To create the database open a terminal and run:
 
 `python setup.py`
 
-This will create the database **restaurants**
+This will create the database **restaurants**.
 
 ## Populate the database
 

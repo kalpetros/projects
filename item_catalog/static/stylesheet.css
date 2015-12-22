@@ -82,3 +82,17 @@ a.menutext {
     bottom:-50px;
     padding-top:100px
 }
+
+.headerlogin {
+    background-color: white !important;
+    border-style: none;
+    text-align: center;
+}
+
+.login {
+    text-align: center;
+}
+
+#signInButton {
+    margin-top: 2%;
+}
