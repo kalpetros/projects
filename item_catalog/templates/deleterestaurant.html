@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Delete {{restaurant.name}}{% endblock %}
+{% block goback %}<a href="{{url_for('showRestaurant')}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
+{% block content %}
+  <form action="{{url_for('deleteRestaurant', restaurant_id=restaurant_id )}}" method='POST'>
+  	<p>Do you really want to delete {{restaurant.name}}?</p>
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+{% endblock %}

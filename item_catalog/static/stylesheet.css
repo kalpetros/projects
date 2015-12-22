@@ -1,0 +1,84 @@
+body {
+	background-image: url('background.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	font-family: 'Poiret One', cursive;
+}
+
+a:link, a:visited, a:active {
+	text-decoration: none;
+	color: white;
+}
+
+a:hover {
+	color: yellow;
+}
+
+h2 {
+	color: white;
+}
+
+.navbar {
+    position: relative;
+}
+
+.navbar-brand {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px !important;  /* 50% of your logo width */
+    display: block;
+}
+
+.col-lg-4 {
+	text-align: center;
+}
+
+.col-lg-4 .glyphicon {
+    font-size: 0.5em;
+}
+
+.cover {
+	background-color: white;
+	margin-top: 2%;
+}
+
+.text {
+	text-align: center;
+	font-size: 1.5em;
+	color: white;
+	margin-top: 7%;
+}
+
+a.menutext {
+	color: black;
+}
+/* Restaurants hover effect*/
+.restaurants {
+    position:relative;
+    width:300px;
+    height:300px;
+    overflow:hidden;
+    float:left;
+    background-color:rgba(26,76,110,0.5)
+}
+
+.restaurants h2 {
+    line-height:45px;
+    margin:0;
+}
+
+.effect img {
+    position:absolute;
+    left:0;
+    bottom:0;
+    cursor:pointer;
+    -webkit-transition:bottom .3s ease-in-out;
+    -moz-transition:bottom .3s ease-in-out;
+    -o-transition:bottom .3s ease-in-out;
+    transition:bottom .3s ease-in-out
+}
+
+.effect img.top:hover {
+    bottom:-50px;
+    padding-top:100px
+}

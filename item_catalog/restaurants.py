@@ -18,10 +18,8 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-
-
-#Menu for UrbanBurger
-restaurant1 = Restaurant(name = "Urban Burger")
+#Menu for Gourmet Burger
+restaurant1 = Restaurant(name = "Gourmet Burger", logo = "http://cdn.tastecard.co.uk/tasteblog/wp-content/uploads/2012/10/GBK_Logo.jpg", description = "At GBK we say tomorrow\'s burger can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the burgers we\'d really rather forget.")
 
 session.add(restaurant1)
 session.commit()
@@ -30,7 +28,6 @@ menuItem2 = MenuItem(name = "Veggie Burger", description = "Juicy grilled veggie
 
 session.add(menuItem2)
 session.commit()
-
 
 menuItem1 = MenuItem(name = "French Fries", description = "with garlic and parmesan", price = "$2.99", course = "Appetizer", restaurant = restaurant1)
 
@@ -72,15 +69,11 @@ menuItem8 = MenuItem(name = "Veggie Burger", description = "Made with freshest o
 session.add(menuItem8)
 session.commit()
 
-
-
-
-#Menu for Super Stir Fry
-restaurant2 = Restaurant(name = "Super Stir Fry")
+#Menu for Rise & Shine
+restaurant2 = Restaurant(name = "Rise & Shine", logo = "http://storage.designcrowd.com/design_img/680926/438499/438499_4246564_680926_thumbnail.jpg", description = "At Rise & Shine we say tomorrow\'s steak can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the steak we\'d really rather forget.")
 
 session.add(restaurant2)
 session.commit()
-
 
 menuItem1 = MenuItem(name = "Chicken Stir Fry", description = "With your choice of noodles vegetables and sauces", price = "$7.99", course = "Entree", restaurant = restaurant2)
 
@@ -112,15 +105,11 @@ menuItem6 = MenuItem(name = "Ramen", description = "a Japanese noodle soup dish.
 session.add(menuItem6)
 session.commit()
 
-
-
-
-#Menu for Panda Garden
-restaurant1 = Restaurant(name = "Panda Garden")
+#Menu for Mowgli's
+restaurant1 = Restaurant(name = "Mowgli\'s", logo = "http://brandnucreative.co.uk/wp-content/uploads/2013/10/mowglis-indian-logo.jpg", description = "At Mowgli\'s' we say tomorrow\'s curry can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the curry we\'d really rather forget.")
 
 session.add(restaurant1)
 session.commit()
-
 
 menuItem1 = MenuItem(name = "Pho", description = "a Vietnamese noodle soup consisting of broth, linguine-shaped rice noodles called banh pho, a few herbs, and meat.", price = "$8.99", course = "Entree", restaurant = restaurant1)
 
@@ -147,13 +136,11 @@ menuItem2 = MenuItem(name = "Veggie Burger", description = "Juicy grilled veggie
 session.add(menuItem2)
 session.commit()
 
-
-#Menu for Thyme for that
-restaurant1 = Restaurant(name = "Thyme for That Vegetarian Cuisine ")
+#Menu for Ashley's
+restaurant1 = Restaurant(name = "Ashley\'s", logo = "https://s3.amazonaws.com/midnight-merchant-assets/images/logos/300x300/ashleys_logo_300x300.png", description = "At Ashley\'s we say tomorrow\'s spaghetti can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the spaghetti we\'d really rather forget.")
 
 session.add(restaurant1)
 session.commit()
-
 
 menuItem1 = MenuItem(name = "Tres Leches Cake", description = "Rich, luscious sponge cake soaked in sweet milk and topped with vanilla bean whipped cream and strawberries.", price = "$2.99", course = "Dessert", restaurant = restaurant1)
 
@@ -185,14 +172,11 @@ menuItem2 = MenuItem(name = "Veggie Burger", description = "Juicy grilled veggie
 session.add(menuItem2)
 session.commit()
 
-
-
-#Menu for Tony's Bistro
-restaurant1 = Restaurant(name = "Tony\'s Bistro ")
+#Menu for Fanajeen
+restaurant1 = Restaurant(name = "Fanajeen", logo = "http://storage.designcrowd.com/design_img/300918/82247/82247_3268921_300918_thumbnail.jpg", description = "At Fanajeen we say tomorrow\'s tonkatsu can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the tonkatsu we\'d really rather forget.")
 
 session.add(restaurant1)
 session.commit()
-
 
 menuItem1 = MenuItem(name = "Shellfish Tower", description = "Lobster, shrimp, sea snails, crawfish, stacked into a delicious tower", price = "$13.95", course = "Entree", restaurant = restaurant1)
 
@@ -219,15 +203,11 @@ menuItem5 = MenuItem(name = "Tonkatsu Ramen", description = "Noodles in a delici
 session.add(menuItem5)
 session.commit()
 
-
-
-
-#Menu for Andala's 
-restaurant1 = Restaurant(name = "Andala\'s")
+#Menu for The Noble East
+restaurant1 = Restaurant(name = "The Noble East", logo = "http://storage.designcrowd.com/design_img/680926/438499/438499_4246564_680926_thumbnail.jpg", description = "At The Noble East we say tomorrow\'s chicken marsala can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the chicken marsala we\'d really rather forget.")
 
 session.add(restaurant1)
 session.commit()
-
 
 menuItem1 = MenuItem(name = "Lamb Curry", description = "Slow cook that thang in a pool of tomatoes, onions and alllll those tasty Indian spices. Mmmm.", price = "$9.95", course = "Entree", restaurant = restaurant1)
 
@@ -253,93 +233,5 @@ menuItem2 = MenuItem(name = "Veggie Burger", description = "Juicy grilled veggie
 
 session.add(menuItem2)
 session.commit()
-
-
-
-
-#Menu for Auntie Ann's
-restaurant1 = Restaurant(name = "Auntie Ann\'s Diner' ")
-
-session.add(restaurant1)
-session.commit()
-
-menuItem9 = MenuItem(name = "Chicken Fried Steak", description = "Fresh battered sirloin steak fried and smothered with cream gravy", price = "$8.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem9)
-session.commit()
-
-
-
-menuItem1 = MenuItem(name = "Boysenberry Sorbet", description = "An unsettlingly huge amount of ripe berries turned into frozen (and seedless) awesomeness", price = "$2.99", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(name = "Broiled salmon", description = "Salmon fillet marinated with fresh herbs and broiled hot & fast", price = "$10.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(name = "Morels on toast (seasonal)", description = "Wild morel mushrooms fried in butter, served on herbed toast slices", price = "$7.50", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(name = "Tandoori Chicken", description = "Chicken marinated in yoghurt and seasoned with a spicy mix(chilli, tamarind among others) and slow cooked in a cylindrical clay or metal oven which gets its heat from burning charcoal.", price = "$8.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem2 = MenuItem(name = "Veggie Burger", description = "Juicy grilled veggie patty with tomato mayo and lettuce", price = "$9.50", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem10 = MenuItem(name = "Spinach Ice Cream", description = "vanilla ice cream made with organic spinach leaves", price = "$1.99", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem10)
-session.commit()
-
-
-
-#Menu for Cocina Y Amor
-restaurant1 = Restaurant(name = "Cocina Y Amor ")
-
-session.add(restaurant1)
-session.commit()
-
-
-menuItem1 = MenuItem(name = "Super Burrito Al Pastor", description = "Marinated Pork, Rice, Beans, Avocado, Cilantro, Salsa, Tortilla", price = "$5.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(name = "Cachapa", description = "Golden brown, corn-based Venezuelan pancake; usually stuffed with queso telita or queso de mano, and possibly lechon. ", price = "$7.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-
-restaurant1 = Restaurant(name = "State Bird Provisions")
-session.add(restaurant1)
-session.commit()
-
-menuItem1 = MenuItem(name = "Chantrelle Toast", description = "Crispy Toast with Sesame Seeds slathered with buttery chantrelle mushrooms", price = "$5.95", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit
-
-menuItem1 = MenuItem(name = "Guanciale Chawanmushi", description = "Japanese egg custard served hot with spicey Italian Pork Jowl (guanciale)", price = "$6.95", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-
-
-menuItem1 = MenuItem(name = "Lemon Curd Ice Cream Sandwich", description = "Lemon Curd Ice Cream Sandwich on a chocolate macaron with cardamom meringue and cashews", price = "$4.25", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
 
 print "added menu items!"

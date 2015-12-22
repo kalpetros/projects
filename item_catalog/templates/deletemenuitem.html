@@ -1,8 +1,8 @@
 {% extends "base.html" %}
+{% block goback %}<a href="{{url_for('showMenu', restaurant_id=restaurant_id)}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
 {% block content %}
-  <h1>Delete {{item.name}}</h1>
   <form action="{{url_for('deleteMenuItem', restaurant_id=restaurant_id, item_id=item_id)}}" method='POST'>
+  	<p>Do you really want to delete {{item.name}}?</p>
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a href="{{url_for('showMenu', restaurant_id=restaurant_id)}}" class="btn btn-primary">Cancel</a>
   </form>
 {% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block goback %}<a href="{{url_for('showRestaurant')}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
+{% block addcontent %}<a href="{{url_for('newMenuItem', restaurant_id=restaurant.id)}}">Add new menu item</a>{% endblock %}
+{% block content %}
+  <div class="row">
+    <div class="col-lg-4">
+      <img src="{{restaurant.logo}}" alt="..." class="img-circle">
+    </div>
+    <div class="col-lg-6 text">
+      <p>{{restaurant.description}}</p>
+    </div>
+  </div>
+  <div class="cover">
+    <table class="table table-striped">
+    	<thead>
+    	  <tr>
+    	  	<th>Item</th>
+    	  	<th>Course</th>
+    	  	<th>Price</th>
+    	  </tr>
+    	</thead>
+    	<tbody>
+    	<!-- Logical Code -->
+    	{% for item in items %}
+    	<tr>
+    	<td>{{item.name}}</td>
+    	<td>{{item.course}}</td>
+    	<td>{{item.price}}</td>
+    	<td><a href="{{url_for('editMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Edit</a></td>
+    	<td><a href="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Delete</a></td>
+    	</tr>
+    	{% endfor %}
+    	</tbody>
+    </table>
+  </div>
+{% endblock %}

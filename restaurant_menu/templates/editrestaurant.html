@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-  <h1>Edit {{restaurant.name}}</h1>
-  <form action="{{url_for('editRestaurant', restaurant_id=restaurant_id)}}" method='POST'>
-    <input type='text' class="form-control" size='30' name='name', placeholder='{{restaurant.name}}'>
-    </br>
-    <button type="submit" class="btn btn-default">Update</button>
-  </form>
-{% endblock %}

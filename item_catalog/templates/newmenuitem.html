@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block goback %}<a href="{{url_for('showMenu', restaurant_id=restaurant_id)}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
+{% block content %}
+  <div class="panel panel-default">
+    <div class="panel-heading">Add a new menu item</div>
+    <div class="panel-body">
+      <form action="{{url_for('newMenuItem', restaurant_id=restaurant_id)}}" method='POST'>
+        <input type='text' class="form-control" size='30' name='name', placeholder='Name'>
+        </br>
+        <input type='text' class="form-control" size='30' name='description', placeholder='Description'>
+        </br>
+        <div class="input-group">
+          <div class="input-group-addon">$</div>
+          <input type="text" class="form-control" name='price' placeholder="Price">
+          <div class="input-group-addon">.00</div>
+        </div>
+        </br>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-primary active">
+            <input type="checkbox" autocomplete="off" checked> Entree
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox" autocomplete="off"> Beverage
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox" autocomplete="off"> Dessert
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox" autocomplete="off"> Appetizer
+          </label>
+        </div>
+        </br>
+        <input type='text' class="form-control" size='30' name='course', placeholder='Course'>
+        </br>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}
