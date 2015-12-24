@@ -134,26 +134,24 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += '"style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
-@app.route('/gdisconnect')
-def gdisconnect():
-    access_token = login_session['access_token']
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: ' 
-    print login_session['username']
+@app.route('/logout')
+def logout():
+    access_token = login_session['credentials'].access_token
+    print 'The access token is %s' % access_token
+    print 'User name is: %s' % login_session['username']
     if access_token is None:
         print 'Access Token is None'
         response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result is '
-    print result
+    print 'result is %s' % result
     if result['status'] == '200':
         del login_session['access_token'] 
         del login_session['gplus_id']
@@ -195,9 +193,9 @@ def menuItemJSON(restaurant_id, menu_id):
 def showRestaurant():
     restaurants = session.query(Restaurant).all()
     if 'username' not in login_session:
-        return render_template('public.html', restaurants=restaurants)
+        return render_template('public_restaurants.html', restaurants=restaurants)
     else:
-        return render_template('restaurants.html', restaurants=restaurants)
+        return render_template('restaurants.html', restaurants=restaurants, user=login_session)
 
 # Create a new restaurant
 @app.route('/restaurants/new/', methods=['GET','POST'])
@@ -211,7 +209,7 @@ def newRestaurant():
 		flash("You just added a new restaurant!")
 		return redirect(url_for('showRestaurant'))
 	else:
-		return render_template('newrestaurant.html')
+		return render_template('newrestaurant.html', user=login_session)
 
 # Edit restaurant
 @app.route('/restaurants/<int:restaurant_id>/edit/', methods=['GET','POST'])
@@ -231,7 +229,7 @@ def editRestaurant(restaurant_id):
 		flash("Restaurant's name updated!")
 		return redirect(url_for('showRestaurant'))
 	else:
-		return render_template('editrestaurant.html', restaurant_id=restaurant_id, restaurant=editRestaurant)
+		return render_template('editrestaurant.html', restaurant_id=restaurant_id, restaurant=editRestaurant, user=login_session)
 
 # Delete restaurant
 @app.route('/restaurants/<int:restaurant_id>/delete/', methods=['GET','POST'])
@@ -245,7 +243,7 @@ def deleteRestaurant(restaurant_id):
 		flash("Restaurant deleted!")
 		return redirect(url_for('showRestaurant'))
 	else:
-		return render_template('deleterestaurant.html', restaurant_id=restaurant_id, restaurant=deleteRestaurant)
+		return render_template('deleterestaurant.html', restaurant_id=restaurant_id, restaurant=deleteRestaurant, user=login_session)
 
 # List menu items
 @app.route('/restaurants/<int:restaurant_id>/menu/')
@@ -254,9 +252,9 @@ def showMenu(restaurant_id):
     creator = getUserInfo(restaurant.user_id)
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id).all()
     if 'username' not in login_session or creator.id != login_session['user_id']:    
-        return render_template('public.html', restaurant=restaurant, items=items, creator=creator)
+        return render_template('public_menu.html', restaurant=restaurant, items=items, creator=creator)
     else:
-        return render_template('menu.html', restaurant=restaurant, items=items, creator=creator)
+        return render_template('menu.html', restaurant=restaurant, items=items, creator=creator, user=login_session)
 
 # Create new menu item
 @app.route('/restaurants/<int:restaurant_id>/menu/new/', methods=['GET','POST'])
@@ -270,7 +268,7 @@ def newMenuItem(restaurant_id):
 		flash("You just added a new menu item!")
 		return redirect(url_for('showMenu', restaurant_id=restaurant_id))
 	else:
-		return render_template('newmenuitem.html', restaurant_id=restaurant_id)
+		return render_template('newmenuitem.html', restaurant_id=restaurant_id, user=login_session)
 
 # Edit menu item
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:item_id>/edit/', methods=['GET','POST'])
@@ -292,7 +290,7 @@ def editMenuItem(restaurant_id, item_id):
 		flash("Menu item updated!")
 		return redirect(url_for('showMenu', restaurant_id=restaurant_id))
 	else:
-		return render_template('editmenuitem.html', restaurant_id=restaurant_id, item_id=item_id, item=editMenuItem)
+		return render_template('editmenuitem.html', restaurant_id=restaurant_id, item_id=item_id, item=editMenuItem, user=login_session)
 
 # Delete menu item
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:item_id>/delete/', methods=['GET','POST'])
@@ -306,7 +304,7 @@ def deleteMenuItem(restaurant_id, item_id):
 		flash("Menu item deleted!")
 		return redirect(url_for('showMenu', restaurant_id=restaurant_id))
 	else:
-		return render_template('deletemenuitem.html', restaurant_id=restaurant_id, item_id=item_id, item=deleteMenuItem)
+		return render_template('deletemenuitem.html', restaurant_id=restaurant_id, item_id=item_id, item=deleteMenuItem, user=login_session)
 
 if __name__ == '__main__':
 	app.secret_key = 'super_secret_key'

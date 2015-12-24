@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block goback %}<a href="{{url_for('showRestaurant')}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
-{% block addcontent %}<a href="{{url_for('newMenuItem', restaurant_id=restaurant.id)}}">Add new menu item</a>{% endblock %}
 {% block rss %}<a href="{{url_for('restaurantMenuJSON', restaurant_id=restaurant.id)}}"><img src="http://www.outplacement.it/outplacement/wp-content/uploads/2014/06/1401811899_rss.png" height="25px" width="25px"></a>{% endblock %}
 {% block content %}
   <div class="row">
@@ -27,8 +26,6 @@
     	<td>{{item.name}}</td>
     	<td>{{item.course}}</td>
     	<td>{{item.price}}</td>
-    	<td><a href="{{url_for('editMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Edit</a></td>
-    	<td><a href="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Delete</a></td>
     	</tr>
     	{% endfor %}
     	</tbody>

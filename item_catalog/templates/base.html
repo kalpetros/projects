@@ -1,17 +1,21 @@
 <html>
   <head>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='stylesheet.css') }}">
     <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+    <!-- Scripts -->
     <!-- Latest jQuery -->
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <!-- Auto Dismiss Alert -->
-    <script src="{{ url_for('static', filename='autodismiss.js') }}"></script>
+    <script src="{{ url_for('static', filename='autodismiss.js') }}" async defer></script>
     <!-- OAuth -->
     <script src="//apis.google.com/js/platform.js" async defer></script>
+    <!-- End of Scripts -->
   </head>
   <body>
     <!-- Static navbar -->
@@ -32,12 +36,23 @@
             <li>{% block addcontent %}{% endblock %}</li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            {% if 2==2 %}
-            <li><a href="/login">Login</a></li>
+            <!-- TEST CODE
+                 REPLACE WITH 
+                 session
+                 CHECKING CODE -->
+            {% if 2<3: %}
+              <li><a href="/login">Login</a></li>
             {% else %}
-            <li><a href="/gdisconnect">Logout</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="{{ user.picture }}" class="img-circle" height="25px" width="25px"> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">{{ user.username }}</li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="/logout">Logout</a></li>
+                </ul>
+              </li>
             {% endif %}
-            <li><a href="{{url_for('restaurantsJSON')}}"><img src="http://www.outplacement.it/outplacement/wp-content/uploads/2014/06/1401811899_rss.png" height="25px" width="25px"></a></li>
+            <li>{% block rss %}{% endblock %}</li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

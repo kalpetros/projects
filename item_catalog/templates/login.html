@@ -8,6 +8,7 @@
       <h1>Restaurant Catalog</h1>
       <h3>A list of restaurants and their menus</h3>
       <!-- Google Sign in Button -->
+      {% if 'username' not in login_session: %}
       <div id="signInButton">
   	    <span class="g-signin"
 		  data-scope="openid email"
@@ -19,12 +20,15 @@
 		  data-approvalprompt="force">
 		</span>
       </div>
+      {% else %}
+        <h4>You are logged in as: Petros Kalogiannakis</h4>
+      {% endif %}
       <!-- Google Login -->
 	  <script>
 	  function signInCallback(authResult) {
 	    if (authResult['code']) {
 	      // Hide the sign-in button now that the user is authorized
-		  $('#signinButton').attr('style', 'display: none');
+		  $('#signInButton').attr('style', 'display: none');
 		  // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
 		  $.ajax({
 		    type: 'POST',
@@ -35,7 +39,7 @@
 			success: function(result) {
 			  // Handle or verify the server response if necessary.
 			  if (result) {
-			    $('#result').html('Login Successful! '+ result + ' Redirecting...')
+			    $('#result').html('Login Successful! Redirecting...')
 			    setTimeout(function() {
 			      window.location.href = "/restaurants";
 			    }, 4000);
