@@ -138,7 +138,7 @@ class MenuItem(Base):
 # Instance of the create_engine class
 # that points to the database that we'll use
 engine = create_engine(
-	'sqlite:///restaurants.db')
+	'sqlite:///restaurantsdb.db')
 # Goes into the database and adds
 # the classes we'll create as new
 # tables in the database

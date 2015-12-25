@@ -1,242 +1,315 @@
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+app = Flask(__name__)
+
+# import CRUD Operations
+from setup import Base, Restaurant, MenuItem, User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
- 
-from setup import Restaurant, Base, MenuItem, User
- 
-engine = create_engine('sqlite:///restaurants.db')
-# Bind the engine to the metadata of the Base class so that the
-# declaratives can be accessed through a DBSession instance
+
+# Authentication & Authorization OAuth
+from flask import session as login_session
+import random, string
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = "Restaurant Catalog"
+
+# Create session and connect to the DB
+engine = create_engine('sqlite:///restaurantsdb.db')
 Base.metadata.bind = engine
- 
 DBSession = sessionmaker(bind=engine)
-# A DBSession() instance establishes all conversations with the database
-# and represents a "staging zone" for all the objects loaded into the
-# database session object. Any change made against the objects in the
-# session won't be persisted into the database until you call
-# session.commit(). If you're not happy about the changes, you can
-# revert all of them back to the last commit by calling
-# session.rollback()
 session = DBSession()
 
-# Create dummy user
-User1 = User(name="Dummy Dumm", email="dummyemail@dummyprovider.com", picture='https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png')
-session.add(User1)
-session.commit()
-
-#Menu for Gourmet Burger
-restaurant1 = Restaurant(user_id=1, name = "Gourmet Burger", logo = "http://cdn.tastecard.co.uk/tasteblog/wp-content/uploads/2012/10/GBK_Logo.jpg", description = "At GBK we say tomorrow\'s burger can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the burgers we\'d really rather forget.")
-
-session.add(restaurant1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Veggie Burger", description = "Juicy grilled veggie patty with tomato mayo and lettuce", price = "$7.50", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem1 = MenuItem(user_id=1, name = "French Fries", description = "with garlic and parmesan", price = "$2.99", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Chicken Burger", description = "Juicy grilled chicken patty with tomato mayo and lettuce", price = "$5.50", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(user_id=1, name = "Chocolate Cake", description = "fresh baked and served with ice cream", price = "$3.99", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(user_id=1, name = "Sirloin Burger", description = "Made with grade A beef", price = "$7.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem5 = MenuItem(user_id=1, name = "Root Beer", description = "16oz of refreshing goodness", price = "$1.99", course = "Beverage", restaurant = restaurant1)
-
-session.add(menuItem5)
-session.commit()
-
-menuItem6 = MenuItem(user_id=1, name = "Iced Tea", description = "with Lemon", price = "$.99", course = "Beverage", restaurant = restaurant1)
-
-session.add(menuItem6)
-session.commit()
-
-menuItem7 = MenuItem(user_id=1, name = "Grilled Cheese Sandwich", description = "On texas toast with American Cheese", price = "$3.49", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem7)
-session.commit()
-
-menuItem8 = MenuItem(user_id=1, name = "Veggie Burger", description = "Made with freshest of ingredients and home grown spices", price = "$5.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem8)
-session.commit()
-
-#Menu for Rise & Shine
-restaurant2 = Restaurant(user_id=1, name = "Rise & Shine", logo = "http://storage.designcrowd.com/design_img/680926/438499/438499_4246564_680926_thumbnail.jpg", description = "At Rise & Shine we say tomorrow\'s steak can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the steak we\'d really rather forget.")
-
-session.add(restaurant2)
-session.commit()
-
-menuItem1 = MenuItem(user_id=1, name = "Chicken Stir Fry", description = "With your choice of noodles vegetables and sauces", price = "$7.99", course = "Entree", restaurant = restaurant2)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Peking Duck", description = " A famous duck dish from Beijing[1] that has been prepared since the imperial era. The meat is prized for its thin, crisp skin, with authentic versions of the dish serving mostly the skin and little meat, sliced in front of the diners by the cook", price = "$25", course = "Entree", restaurant = restaurant2)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(user_id=1, name = "Spicy Tuna Roll", description = "Seared rare ahi, avocado, edamame, cucumber with wasabi soy sauce ", price = "15", course = "Entree", restaurant = restaurant2)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(user_id=1, name = "Nepali Momo ", description = "Steamed dumplings made with vegetables, spices and meat. ", price = "12", course = "Entree", restaurant = restaurant2)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem5 = MenuItem(user_id=1, name = "Beef Noodle Soup", description = "A Chinese noodle soup made of stewed or red braised beef, beef broth, vegetables and Chinese noodles.", price = "14", course = "Entree", restaurant = restaurant2)
-
-session.add(menuItem5)
-session.commit()
-
-menuItem6 = MenuItem(user_id=1, name = "Ramen", description = "a Japanese noodle soup dish. It consists of Chinese-style wheat noodles served in a meat- or (occasionally) fish-based broth, often flavored with soy sauce or miso, and uses toppings such as sliced pork, dried seaweed, kamaboko, and green onions.", price = "12", course = "Entree", restaurant = restaurant2)
-
-session.add(menuItem6)
-session.commit()
-
-#Menu for Mowgli's
-restaurant1 = Restaurant(user_id=1, name = "Mowgli\'s", logo = "http://brandnucreative.co.uk/wp-content/uploads/2013/10/mowglis-indian-logo.jpg", description = "At Mowgli\'s' we say tomorrow\'s curry can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the curry we\'d really rather forget.")
-
-session.add(restaurant1)
-session.commit()
-
-menuItem1 = MenuItem(user_id=1, name = "Pho", description = "a Vietnamese noodle soup consisting of broth, linguine-shaped rice noodles called banh pho, a few herbs, and meat.", price = "$8.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Chinese Dumplings", description = "a common Chinese dumpling which generally consists of minced meat and finely chopped vegetables wrapped into a piece of dough skin. The skin can be either thin and elastic or thicker.", price = "$6.99", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(user_id=1, name = "Gyoza", description = "The most prominent differences between Japanese-style gyoza and Chinese-style jiaozi are the rich garlic flavor, which is less noticeable in the Chinese version, the light seasoning of Japanese gyoza with salt and soy sauce, and the fact that gyoza wrappers are much thinner", price = "$9.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(user_id=1, name = "Stinky Tofu", description = "Taiwanese dish, deep fried fermented tofu served with pickled cabbage.", price = "$6.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Veggie Burger", description = "Juicy grilled veggie patty with tomato mayo and lettuce", price = "$9.50", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-#Menu for Ashley's
-restaurant1 = Restaurant(user_id=1, name = "Ashley\'s", logo = "https://s3.amazonaws.com/midnight-merchant-assets/images/logos/300x300/ashleys_logo_300x300.png", description = "At Ashley\'s we say tomorrow\'s spaghetti can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the spaghetti we\'d really rather forget.")
-
-session.add(restaurant1)
-session.commit()
-
-menuItem1 = MenuItem(user_id=1, name = "Tres Leches Cake", description = "Rich, luscious sponge cake soaked in sweet milk and topped with vanilla bean whipped cream and strawberries.", price = "$2.99", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Mushroom risotto", description = "Portabello mushrooms in a creamy risotto", price = "$5.99", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(user_id=1, name = "Honey Boba Shaved Snow", description = "Milk snow layered with honey boba, jasmine tea jelly, grass jelly, caramel, cream, and freshly made mochi", price = "$4.50", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(user_id=1, name = "Cauliflower Manchurian", description = "Golden fried cauliflower florets in a midly spiced soya,garlic sauce cooked with fresh cilantro, celery, chilies,ginger & green onions", price = "$6.95", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem5 = MenuItem(user_id=1, name = "Aloo Gobi Burrito", description = "Vegan goodness. Burrito filled with rice, garbanzo beans, curry sauce, potatoes (aloo), fried cauliflower (gobi) and chutney. Nom Nom", price = "$7.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem5)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Veggie Burger", description = "Juicy grilled veggie patty with tomato mayo and lettuce", price = "$6.80", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-#Menu for Fanajeen
-restaurant1 = Restaurant(user_id=1, name = "Fanajeen", logo = "http://storage.designcrowd.com/design_img/300918/82247/82247_3268921_300918_thumbnail.jpg", description = "At Fanajeen we say tomorrow\'s tonkatsu can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the tonkatsu we\'d really rather forget.")
-
-session.add(restaurant1)
-session.commit()
-
-menuItem1 = MenuItem(user_id=1, name = "Shellfish Tower", description = "Lobster, shrimp, sea snails, crawfish, stacked into a delicious tower", price = "$13.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Chicken and Rice", description = "Chicken... and rice", price = "$4.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(user_id=1, name = "Mom's Spaghetti", description = "Spaghetti with some incredible tomato sauce made by mom", price = "$6.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(user_id=1, name = "Choc Full O\' Mint (Smitten\'s Fresh Mint Chip ice cream)", description = "Milk, cream, salt, ..., Liquid nitrogen magic", price = "$3.95", course = "Dessert", restaurant = restaurant1)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem5 = MenuItem(user_id=1, name = "Tonkatsu Ramen", description = "Noodles in a delicious pork-based broth with a soft-boiled egg", price = "$7.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem5)
-session.commit()
-
-#Menu for The Noble East
-restaurant1 = Restaurant(user_id=1, name = "The Noble East", logo = "http://storage.designcrowd.com/design_img/680926/438499/438499_4246564_680926_thumbnail.jpg", description = "At The Noble East we say tomorrow\'s chicken marsala can always be better, so we spend a lot of time making mess in the kitchen and trying out new ideas. Like all pioneers, though, from time to time we don\'t get it quite right. It happens, okay? Here, we dig through the archives to relive the chicken marsala we\'d really rather forget.")
-
-session.add(restaurant1)
-session.commit()
-
-menuItem1 = MenuItem(user_id=1, name = "Lamb Curry", description = "Slow cook that thang in a pool of tomatoes, onions and alllll those tasty Indian spices. Mmmm.", price = "$9.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem1)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Chicken Marsala", description = "Chicken cooked in Marsala wine sauce with mushrooms", price = "$7.95", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-menuItem3 = MenuItem(user_id=1, name = "Potstickers", description = "Delicious chicken and veggies encapsulated in fried dough.", price = "$6.50", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem3)
-session.commit()
-
-menuItem4 = MenuItem(user_id=1, name = "Nigiri Sampler", description = "Maguro, Sake, Hamachi, Unagi, Uni, TORO!", price = "$6.75", course = "Appetizer", restaurant = restaurant1)
-
-session.add(menuItem4)
-session.commit()
-
-menuItem2 = MenuItem(user_id=1, name = "Veggie Burger", description = "Juicy grilled veggie patty with tomato mayo and lettuce", price = "$7.00", course = "Entree", restaurant = restaurant1)
-
-session.add(menuItem2)
-session.commit()
-
-print "added menu items!"
+# Create user and get user's info
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
+# Anti-forgery state token
+# Create a state token to prevent request forgery
+# Store it in the session for later validation
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    # return "The current session state is %s" % login_session['state']
+    return render_template('login.html', STATE=state)
+
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    # Validate state token
+    if request.args.get('state') != login_session['state']:
+        print "Invalid state parameter"
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # Obtain authorization code
+    code = request.data
+
+    try:
+        # Upgrade the authorization code into a credentials object
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(code)
+    except FlowExchangeError:
+        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Check that the access token is valid.
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    # If there was an error in the access token info, abort.
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+
+    # Verify that the access token is used for the intended user.
+    gplus_id = credentials.id_token['sub']
+    if result['user_id'] != gplus_id:
+        response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid for this app.
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(json.dumps("Token's client ID does not match app's."), 401)
+        print "Token's client ID does not match app's."
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    stored_credentials = login_session.get('credentials')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_credentials is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Store the access token in the session for later use.
+    login_session['credentials'] = credentials
+    login_session['gplus_id'] = gplus_id
+
+    # Get user info
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+
+    data = answer.json()
+
+    login_session['username'] = data['name']
+    login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
+
+    # Check if user exists, if not create a new one
+    user_id = getUserID(login_session['email'])
+    print "#####################################"
+    print "value of user_id is %s" % user_id
+    print "#####################################"
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['username']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    output += '"style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'
+    flash("You are now logged in as %s" % login_session['username'])
+    print "done!"
+    return output
+
+@app.route('/logout')
+def logout():
+    access_token = login_session['credentials'].access_token
+    print 'The access token is %s' % access_token
+    print 'User name is: %s' % login_session['username']
+    if access_token is None:
+        print 'Access Token is None'
+        response = make_response(json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    print 'result is %s' % result
+    if result['status'] == '200':
+        del login_session['access_token'] 
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+# JSON API ENDPOINT (GET REQUEST)
+@app.route('/restaurants/JSON')
+def restaurantsJSON():
+	restaurants = session.query(Restaurant).all()
+	return jsonify(Restaurants=[restaurant.serialize for restaurant in restaurants])
+
+@app.route('/restaurants/<int:restaurant_id>/menu/JSON')
+def restaurantMenuJSON(restaurant_id):
+	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+	items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
+	return jsonify(MenuItems=[i.serialize for i in items])
+
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+def menuItemJSON(restaurant_id, menu_id):
+	menuItem = session.query(MenuItem).filter_by(id=menu_id).one()
+	return jsonify(MenuItems=menuItem.serialize)
+
+##############################################
+################### Routes ###################
+##############################################
+
+# Landing page (List all restaurants)
+@app.route('/')
+@app.route('/restaurants/')
+def showRestaurant():
+    restaurants = session.query(Restaurant).all()
+    if 'username' not in login_session:
+        return render_template('public_restaurants.html', restaurants=restaurants)
+    else:
+        return render_template('restaurants.html', restaurants=restaurants, user=login_session)
+
+# Create a new restaurant
+@app.route('/restaurants/new/', methods=['GET','POST'])
+def newRestaurant():
+	if 'username' not in login_session:
+		return render_template('401.html')
+	if request.method == 'POST':
+		newRestaurant = Restaurant(name=request.form['name'], description=request.form['description'], logo=request.form['logo'], user_id=login_session['user_id'])
+		session.add(newRestaurant)
+		session.commit()
+		flash("You just added a new restaurant!")
+		return redirect(url_for('showRestaurant'))
+	else:
+		return render_template('newrestaurant.html', user=login_session)
+
+# Edit restaurant
+@app.route('/restaurants/<int:restaurant_id>/edit/', methods=['GET','POST'])
+def editRestaurant(restaurant_id):
+	if 'username' not in login_session:
+		return render_template('401.html')
+	editRestaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+	if request.method == 'POST':
+		if request.form['name']:
+			editRestaurant.name = request.form['name']
+		if request.form['description']:
+			editRestaurant.description = request.form['description']
+		if request.form['logo']:
+			editRestaurant.logo = request.form['logo']
+		session.add(editRestaurant)
+		session.commit()
+		flash("Restaurant's name updated!")
+		return redirect(url_for('showRestaurant'))
+	else:
+		return render_template('editrestaurant.html', restaurant_id=restaurant_id, restaurant=editRestaurant, user=login_session)
+
+# Delete restaurant
+@app.route('/restaurants/<int:restaurant_id>/delete/', methods=['GET','POST'])
+def deleteRestaurant(restaurant_id):
+	if 'username' not in login_session:
+		return render_template('401.html')
+	deleteRestaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+	if request.method == 'POST':
+		session.delete(deleteRestaurant)
+		session.commit()
+		flash("Restaurant deleted!")
+		return redirect(url_for('showRestaurant'))
+	else:
+		return render_template('deleterestaurant.html', restaurant_id=restaurant_id, restaurant=deleteRestaurant, user=login_session)
+
+# List menu items
+@app.route('/restaurants/<int:restaurant_id>/menu/')
+def showMenu(restaurant_id):
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    creator = getUserInfo(restaurant.user_id)
+    items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id).all()
+    if 'username' not in login_session or creator.id != login_session['user_id']:    
+        return render_template('public_menu.html', restaurant=restaurant, items=items, user=login_session)
+    else:
+        return render_template('menu.html', restaurant=restaurant, items=items, creator=creator, user=login_session)
+
+# Create new menu item
+@app.route('/restaurants/<int:restaurant_id>/menu/new/', methods=['GET','POST'])
+def newMenuItem(restaurant_id):
+	if 'username' not in login_session:
+		return render_template('401.html')
+	if request.method == 'POST':
+		newMenuItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id, user_id=login_session['user_id'])
+		session.add(newMenuItem)
+		session.commit()
+		flash("You just added a new menu item!")
+		return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+	else:
+		return render_template('newmenuitem.html', restaurant_id=restaurant_id, user=login_session)
+
+# Edit menu item
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:item_id>/edit/', methods=['GET','POST'])
+def editMenuItem(restaurant_id, item_id):
+	if 'username' not in login_session:
+		return render_template('401.html')
+	editMenuItem = session.query(MenuItem).filter_by(id=item_id).one()
+	if request.method == 'POST':
+		if request.form['name']:
+			editMenuItem.name = request.form['name']
+		if request.form['description']:
+			editMenuItem.description = request.form['description']
+		if request.form['price']:
+			editMenuItem.price = request.form['price']
+		if request.form['course']:
+			editMenuItem.course = request.form['course']
+		session.add(editMenuItem)
+		session.commit()
+		flash("Menu item updated!")
+		return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+	else:
+		return render_template('editmenuitem.html', restaurant_id=restaurant_id, item_id=item_id, item=editMenuItem, user=login_session)
+
+# Delete menu item
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:item_id>/delete/', methods=['GET','POST'])
+def deleteMenuItem(restaurant_id, item_id):
+	if 'username' not in login_session:
+		return render_template('401.html')
+	deleteMenuItem = session.query(MenuItem).filter_by(id=item_id).one()
+	if request.method == 'POST':
+		session.delete(deleteMenuItem)
+		session.commit()
+		flash("Menu item deleted!")
+		return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+	else:
+		return render_template('deletemenuitem.html', restaurant_id=restaurant_id, item_id=item_id, item=deleteMenuItem, user=login_session)
+
+if __name__ == '__main__':
+	app.secret_key = 'super_secret_key'
+	app.debug = True
+	app.run(host='0.0.0.0', port=5000)
