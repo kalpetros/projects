@@ -5,36 +5,34 @@ The current implementation of the item catalog is a restaurant catalog that prov
 
 ## View the app online
 
-You can view the app online [here](https://warm-reaches-9715.herokuapp.com/).
+You can view the app online [here](https://salty-inlet-4402.herokuapp.com/).
 
 ## Run the app in your browser
 
 To run the app in your browser you need install python first.
 
 Once python is installed install the following dependencies with pip:
-
 ```
-pip install Flask sqlalchemy oauth2client
+pip install Flask sqlalchemy oauth2client requests
 ```
-
 ## Set up the database
 
 To create the database open a terminal and run:
-
-`python setup.py`
-
+```
+python setup.py`
+```
 This will create the database **restaurantsdb**.
 
 ## Populate the database
 
 To populate the database with a list of restaurants run:
-
-`python populate.py`
-
+```
+python populate.py
+```
 ## Run the server
 
 To run the server type the following:
-
-`python restaurants.py`
-
-and visit [0.0.0.0:5000](0.0.0.0:5000) or [localhost:5000](localhost:5000) in your browser.
+```
+python restaurants.py
+```
+and visit [0.0.0.0:5000](http://0.0.0.0:5000) or [localhost:5000](http://localhost:5000) in your browser.
