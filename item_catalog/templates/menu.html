@@ -18,6 +18,7 @@
     	  	<th>Item</th>
     	  	<th>Course</th>
     	  	<th>Price</th>
+            <th>Actions</th>
     	  </tr>
     	</thead>
     	<tbody>
@@ -27,8 +28,9 @@
     	<td>{{item.name}}</td>
     	<td>{{item.course}}</td>
     	<td>{{item.price}}</td>
-    	<td><a href="{{url_for('editMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Edit</a></td>
-    	<td><a href="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Delete</a></td>
+    	<td>
+          <a href="{{url_for('editMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext">Edit</a>
+          <a href="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" class="menutext"> Delete</a></td>
     	</tr>
     	{% endfor %}
     	</tbody>
