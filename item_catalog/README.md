@@ -5,7 +5,7 @@ The current implementation of the item catalog is a restaurant catalog that prov
 
 ## View the app online
 
-You can view the app online [here](https://salty-inlet-4402.herokuapp.com/).
+You can view the app online [here](https://floating-beyond-9583.herokuapp.com/).
 
 ## Run the app in your browser
 
