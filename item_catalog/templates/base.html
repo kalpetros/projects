@@ -40,7 +40,7 @@
                  REPLACE WITH 
                  session
                  CHECKING CODE -->
-            {% if 2<3: %}
+            {% if not user: %}
               <li><a href="/login">Login</a></li>
             {% else %}
               <li class="dropdown">

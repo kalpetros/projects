@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block goback %}<a href="{{url_for('showRestaurant')}}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Go back</a>{% endblock %}
+{% block content %}
+  <div class="panel panel-default">
+    <div class="panel-heading info_header">Unauthorized</div>
+    <div class="panel-body info_panel">
+    	<h1>401</h1>
+    	<h3>You don't have the required permissions to view this page.</h3>
+    </div>
+  </div>
+{% endblock %}
