@@ -16,6 +16,11 @@ import json
 from flask import make_response
 import requests
 
+# Cross-site request forgery (CSRF) prevention
+# SeaSurf Flask extention
+from flask.ext.seasurf import SeaSurf
+csrf = SeaSurf(app)
+
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Catalog"
 

@@ -6,6 +6,7 @@
     <div class="panel-body info_panel">
       <h3>Do you really want to delete {{item.name}}?</h3>
       <form action="{{url_for('deleteMenuItem', restaurant_id=restaurant_id, item_id=item_id)}}" method='POST'>
+      	<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="btn btn-danger">Delete</button>
       </form>
     </div>

@@ -11,6 +11,7 @@
 	    </br>
 	    <input type='text' class="form-control" name='logo', placeholder='Logo link (300x300)'>
 	    </br>
+	    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 	    <button type="submit" class="btn btn-primary">Create</button>
 	  </form>
 	</div>
