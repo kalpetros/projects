@@ -5,19 +5,31 @@ The current implementation of the item catalog is a restaurant catalog that prov
 
 ## View the app online
 
-You can view the app online [here](https://floating-beyond-9583.herokuapp.com/).
+You can view the app online [here]().
 
 ## Run the app in your browser
 
-To run the app in your browser you need install python first.
+To run the app in your browser you need install python and virtualenv first or use [Vagrant](https://github.com/kalpetros/projects/tree/master/tournament_results#git-virtualbox--vagrant).
 
-Once python is installed install the following dependencies with pip:
+Clone the project folder and cd to the item_catalog app.
 ```
-pip install Flask sqlalchemy oauth2client requests
+git clone git@github.com:kalpetros/projects.git
+```
+Then type:
+```
+virtualenv venv
+```
+and activate virtualenv by typing (You must source the virtualenv enviroment for each terminal session where you wish to run your app):
+```
+source venv/bin/activate
+```
+Next install the application's dependencies with pip.
+```
+pip install Flask sqlalchemy oauth2client requests flask-seasurf
 ```
 ## Set up the database
 
-To create the database open a terminal and run:
+To create the database type:
 ```
 python setup.py`
 ```
@@ -25,7 +37,7 @@ This will create the database **restaurantsdb**.
 
 ## Populate the database
 
-To populate the database with a list of restaurants run:
+To populate the database with a list of restaurants type:
 ```
 python populate.py
 ```

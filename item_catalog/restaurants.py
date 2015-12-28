@@ -17,7 +17,7 @@ from flask import make_response
 import requests
 
 # Cross-site request forgery (CSRF) prevention
-# SeaSurf Flask extention
+# SeaSurf Flask extension
 from flask.ext.seasurf import SeaSurf
 csrf = SeaSurf(app)
 
