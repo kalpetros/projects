@@ -25,7 +25,7 @@ source venv/bin/activate
 ```
 Next install the application's dependencies with pip.
 ```
-pip install Flask sqlalchemy oauth2client requests flask-seasurf
+pip install Flask sqlalchemy oauth2client requests
 ```
 ## Set up the database
 
