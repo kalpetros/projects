@@ -5,7 +5,7 @@ The current implementation of the item catalog is a restaurant catalog that prov
 
 ## View the app online
 
-You can view the app online [here]().
+You can view the app online [here](https://murmuring-waters-5277.herokuapp.com/).
 
 ## Run the app in your browser
 
@@ -31,7 +31,7 @@ pip install Flask sqlalchemy oauth2client requests flask-seasurf
 
 To create the database type:
 ```
-python setup.py`
+python setup.py
 ```
 This will create the database **restaurantsdb**.
 

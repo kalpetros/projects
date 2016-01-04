@@ -6,5 +6,5 @@ various languages for learning purposes.
 | --- | --- | --- | --- | --- |
 | 1 | Movie Trailer Website | Completed | Python, Javascript(jQuery), HTML, CSS | N/A |
 | 2 | Tournament Results | Completed | Python, PostgreSQL | N/A |
-| 3 | Shelter | Completed | Python, SQLAlchemy | N/A |
-| 4 | Item Catalog | In Progress | Python, Flask, Javascript, jQuery, SQLite, SQLAlchemy, HTML, CSS | [Yes]() |
+| 3 | Shelter | Completed | Python, SQL, SQLAlchemy | N/A |
+| 4 | Item Catalog | In Progress | Python, Flask, Javascript, jQuery, SQLite, SQLAlchemy, HTML, CSS | [Yes](https://murmuring-waters-5277.herokuapp.com/) |

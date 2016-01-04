@@ -16,11 +16,6 @@ import json
 from flask import make_response
 import requests
 
-# Cross-site request forgery (CSRF) prevention
-# SeaSurf Flask extension
-from flask.ext.seasurf import SeaSurf
-csrf = SeaSurf(app)
-
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Catalog"
 
@@ -49,7 +44,7 @@ def getUserID(email):
     except:
         return None
 
-# Anti-forgery state token
+# Cross-site request forgery (CSRF) prevention
 # Create a state token to prevent request forgery
 # Store it in the session for later validation
 @app.route('/login')
@@ -112,7 +107,7 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = credentials.access_token
+    login_session['credentials'] = credentials.to_json()
     login_session['gplus_id'] = gplus_id
 
     # Get user info
@@ -148,7 +143,7 @@ def gconnect():
 
 @app.route('/logout')
 def logout():
-    access_token = login_session['credentials'].access_token
+    access_token = login_session['credentials']
     print 'The access token is %s' % access_token
     print 'User name is: %s' % login_session['username']
     if access_token is None:
