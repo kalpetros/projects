@@ -5,13 +5,13 @@
     <div class="panel-heading">Edit {{item.name}}</div>
     <div class="panel-body">
       <form action="{{url_for('editMenuItem', restaurant_id=restaurant_id, item_id=item.id)}}" method='POST'>
-        <input type='text' class="form-control" size='30' name='name', placeholder='{{item.name}}'>
+        <input type='text' class="form-control" size='30' name='name', value='{{item.name}}'>
         </br>
-        <input type='text' class="form-control" size='30' name='description', placeholder='{{item.description}}'>
+        <input type='text' class="form-control" size='30' name='description', value='{{item.description}}'>
         </br>
         <div class="input-group">
           <div class="input-group-addon">$</div>
-          <input type="text" class="form-control" name='price' placeholder="{{item.price}}">
+          <input type="text" class="form-control" name='price' value="{{item.price}}">
           <div class="input-group-addon">.00</div>
         </div>
         </br><!--
@@ -30,7 +30,7 @@
           </label>
         </div>
         </br>-->
-        <input type='text' class="form-control" size='30' name='course', placeholder='{{item.course}}'>
+        <input type='text' class="form-control" size='30' name='course', value='{{item.course}}'>
         </br>
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="btn btn-warning">Update</button>

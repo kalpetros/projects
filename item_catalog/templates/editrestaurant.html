@@ -5,11 +5,11 @@
     <div class="panel-heading">Edit {{restaurant.name}}</div>
     <div class="panel-body">
 	  <form action="{{url_for('editRestaurant', restaurant_id=restaurant_id)}}" method='POST'>
-	    <input type='text' class="form-control" size='30' name='name', placeholder='{{restaurant.name}}'>
+	    <input type='text' class="form-control" size='30' name='name', value='{{restaurant.name}}'>
 	    </br>
-	    <textarea class="form-control" name='description', placeholder='{{restaurant.description}}'></textarea>
+	    <input type='text' class="form-control" name='description', value='{{restaurant.description}}'></input>
 	    </br>
-	    <input type='text' class="form-control" name='logo', placeholder='{{restaurant.logo}}'>
+	    <input type='text' class="form-control" name='logo', value='{{restaurant.logo}}'>
 	    </br>
 	    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 	    <button type="submit" class="btn btn-warning">Update</button>
