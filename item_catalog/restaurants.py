@@ -23,6 +23,9 @@ import requests
 from flask.ext.seasurf import SeaSurf
 csrf = SeaSurf(app)
 
+# Convert a python dictionary into an xml string
+from dict2xml import dict2xml as xmlify
+
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Catalog"
 
@@ -176,22 +179,39 @@ def logout():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-# JSON API ENDPOINT (GET REQUEST)
-@app.route('/restaurants/JSON')
+# XML API ENDPOINT USING DICT2XML (GET REQUEST)
+@app.route('/restaurants/rss')
 def restaurantsJSON():
 	restaurants = session.query(Restaurant).all()
-	return jsonify(Restaurants=[restaurant.serialize for restaurant in restaurants])
+	for restaurant in restaurants:
+		data = {
+			"name": restaurant.name
+		}
+	return xmlify(data, wrap="restaurants", indent= " ")
 
-@app.route('/restaurants/<int:restaurant_id>/menu/JSON')
+@app.route('/restaurants/<int:restaurant_id>/menu/rss')
 def restaurantMenuJSON(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
 	items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
-	return jsonify(MenuItems=[i.serialize for i in items])
+	for item in items:
+		data = {
+			"name": item.name,
+			"description" : item.description,
+			"price" : item.price,
+			"course" : item.course
+		}
+	return xmlify(data, wrap=restaurant.name, indent= " ")
 
-@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/rss')
 def menuItemJSON(restaurant_id, menu_id):
 	menuItem = session.query(MenuItem).filter_by(id=menu_id).one()
-	return jsonify(MenuItems=menuItem.serialize)
+	data = {
+		"name": menuItem.name,
+		"description" : menuItem.description,
+		"price" : menuItem.price,
+		"course" : menuItem.course
+	}
+	return xmlify(data, wrap=menuItem.name, indent= " ")
 
 ##############################################
 ################### Routes ###################
