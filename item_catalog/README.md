@@ -5,7 +5,7 @@ The current implementation of the item catalog is a restaurant catalog that prov
 
 ## View the app online
 
-You can view the app online [here](https://murmuring-waters-5277.herokuapp.com/).
+You can view the app online [here](https://floating-reaches-7281.herokuapp.com/).
 
 ## Run the app in your browser
 
