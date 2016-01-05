@@ -4,7 +4,7 @@
   <div class="panel panel-default">
     <div class="panel-heading">Edit {{item.name}}</div>
     <div class="panel-body">
-      <form action="{{url_for('newMenuItem', restaurant_id=restaurant_id, item_id=item.id)}}" method='POST'>
+      <form action="{{url_for('editMenuItem', restaurant_id=restaurant_id, item_id=item.id)}}" method='POST'>
         <input type='text' class="form-control" size='30' name='name', placeholder='{{item.name}}'>
         </br>
         <input type='text' class="form-control" size='30' name='description', placeholder='{{item.description}}'>
