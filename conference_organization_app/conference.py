@@ -155,7 +155,6 @@ class ConferenceApi(remote.Service):
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
         user_id = getUserId(user)
-
         if not request.name:
             raise endpoints.BadRequestException("Conference 'name' field required")
 
@@ -185,11 +184,13 @@ class ConferenceApi(remote.Service):
             data["seatsAvailable"] = data["maxAttendees"]
             setattr(request, "seatsAvailable", data["maxAttendees"])
 
-        # make Profile Key from user ID
+        # make Profile Key from user ID as p_key
         p_key = ndb.Key(Profile, user_id)
-        # allocate new Conference ID with Profile key as parent
+
+        # allocate new Conference ID with p_key as parent
         c_id = Conference.allocate_ids(size=1, parent=p_key)[0]
-        # make Conference key from ID
+
+        # make Conference key from ID uses p_key to define parent and c_id as unique id
         c_key = ndb.Key(Conference, c_id, parent=p_key)
         data['key'] = c_key
         data['organizerUserId'] = request.organizerUserId = user_id
@@ -206,19 +207,19 @@ class ConferenceApi(remote.Service):
         """Create new conference."""
         return self._createConferenceObject(request)
 
-	@endpoints.method(ConferenceQueryForms, ConferenceForms,
-		path='queryConferences',
-		http_method='POST',
-		name='queryConferences')
-	def queryConferences(self, request):
-		"""Query for conferences."""
-		conferences = Conference.query()
+    @endpoints.method(ConferenceQueryForms, ConferenceForms,
+            path='queryConferences',
+            http_method='POST',
+            name='queryConferences')
+    def queryConferences(self, request):
+        """Query for conferences."""
+        conferences = Conference.query()
 
-		# return individual ConferenceForm object per Conference
-		return ConferenceForms(
-			items=[self._copyConferenceToForm(conf, "") \
-				for conf in conferences]
-		)
+         # return individual ConferenceForm object per Conference
+        return ConferenceForms(
+            items=[self._copyConferenceToForm(conf, "") \
+                for conf in conferences]
+        )
 
 # registers API
 api = endpoints.api_server([ConferenceApi]) 
