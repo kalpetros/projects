@@ -1,4 +1,5 @@
 # Item Catalog
+![](screenshot.png)
 Web application that provides a list of items within a variety of categories and integrate third party user registration and authentication (OAuth). Authenticated users have the ability to post, edit, and delete their own items.
 
 The current implementation of the item catalog is a restaurant catalog that provides a list of restaurants and their menus.

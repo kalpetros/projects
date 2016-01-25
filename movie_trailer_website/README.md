@@ -1,4 +1,5 @@
 # Movie Trailer Website
+![](screenshot.png)
 written in Python
 
 To run the website
