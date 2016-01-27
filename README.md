@@ -8,5 +8,5 @@ various languages for learning purposes.
 | 2 | Tournament Results | Completed | Python, PostgreSQL | N/A |
 | 3 | Shelter | Completed | Python, SQL, SQLAlchemy | N/A |
 | 4 | Item Catalog | Completed | Python, SQLite, SQLAlchemy, Javascript, HTML, CSS, Heroku | [Yes](https://floating-reaches-7281.herokuapp.com/) |
-| 5 | Conference Organization App | In Progress | Python, PostgreSQL, Javascript, HTML, CSS, Google App Engine | N/A |
+| 5 | Conference Organization App | In Progress | Python, PostgreSQL, Javascript, HTML, CSS, Google App Engine | [Yes](https://conforgapp.appspot.com/) |
 | 6 | Linux Server Configuration | In Progress | Amazon's Elastic Compute Cloud (EC2) | N/A |
