@@ -1,9 +1,10 @@
 # Linux Server Configuration
 Baseline installation of a Linux distribution (Ubuntu 14.04.3 LTS) on a virtual server in Amazon's Elastic Compute Cloud (EC2) that hosts a Flash web application.
+![](screenshot.png)
 
 | IP address | SSH Port | URL |
 | --- | --- | --- |
-| 52.89.38.7 | 2200 | http://ec2-52-89-38-7.us-west-2.compute.amazonaws.com/ |
+| 52.88.146.60 | 2200 | http://ec2-52-88-146-60.us-west-2.compute.amazonaws.com/ |
 
 ## What you'll be installing
 To get the web application up and running the following need to be installed:
@@ -47,7 +48,7 @@ grader  ALL=(ALL:ALL) ALL
 
 ## Setup SSH key authentication & disable password authentication
 1. Temporarily allow password authentication by changing `PasswordAuthentication` fron no to yes
-2. Restart ssh by typing `$ service ssh restart
+2. Restart ssh by typing `$ service ssh restart`
 3. On your local machine type: `$ ssh-keygen`
 4. This will create a private and public key (.pub) in your .ssh folder in /home/username/.ssh
 5. Copy the contents of the public key you created `$ cat public.pub`
@@ -115,9 +116,9 @@ apt-get autoclean
 
 ## Deploying a Python application on Ubuntu VPS
 1. Install additional Python packages: `$ sudo apt-get install python-dev`
-2. Install pip: `$ sudo apt-get install python-pip
-3. Install virtualenv: `$ sudo apt-get install virtualenv
-4. Enable mod_wsgi: `$ sudo a2enmod wsgi
+2. Install pip: `$ sudo apt-get install python-pip`
+3. Install virtualenv: `$ sudo pip install virtualenv`
+4. Enable mod_wsgi: `$ sudo a2enmod wsgi`
 5. Inside **/var/www/catalog/** create a file named catalog.wsgi: `$ sudo nano /var/www/catalog/catalog.wsgi` and paste the following:
 ```
 #!/usr/bin/python
@@ -128,7 +129,7 @@ sys.path.insert(0,"/var/www/catalog/")
 from catalog import app as application
 application.secret_key = 'Add your secret key'
 ```
-1. Create a **catalog.conf** file in **/etc/apache2/sites-available** in order to enable a new virtual host: `$ sudo nano /etc/apach2/sites-available/catalog.conf`
+1. Create a **catalog.conf** file in **/etc/apache2/sites-available** in order to enable a new virtual host: `$ sudo nano /etc/apache2/sites-available/catalog.conf`
 2. Inside **catalog.conf** paste the following:
 ```
 <VirtualHost *:80>
@@ -155,16 +156,17 @@ application.secret_key = 'Add your secret key'
 3. Then you need to source venv to be able to use it: `$ source venv/bin/activate`
 4. Inside **/var/www/catalog/catalog** type: `$ pip install Flask sqlalchemy oauth2client requests Flask-SeaSurf dict2xml`
 5. Deactivate venv: `$ deactivate`
-6. Enable the virtual host: `$ sudo a2ensite catalog`
-7. Restart Apache server: `$ sudo service apache2 restart`
+6. Type: `$ sudo apt-get install python-psycopg2`
+7. Enable the virtual host: `$ sudo a2ensite catalog`
+8. Restart Apache server: `$ sudo service apache2 restart`
 
 ## Install & Configure PostgreSQL
 1. Install PosgresSQL: `$ sudo apt-get install posgresql postgresql-contrib`
 2. Login under user posgres: `$ sudo su - postgres`
 3. Connect to PostgreSQL: `$ psql`
-4. Create user catalog `# CREATE USER catalog WITH PASSWORD type_your_password_here;`
+4. Create user catalog `# CREATE USER catalog WITH PASSWORD 'type_your_password_here';`
 5. Give permissions to user to create tables: `# ALTER USER catalog CREATEDB;`
-6. Create database catalog: `# CREATE DATABASE catalog WITH OWNER catalog;
+6. Create database catalog: `# CREATE DATABASE catalog WITH OWNER catalog`;
 7. Connect to database catalog: `# \c catalog`
 8. Revoke all rights: `# REVOKE ALL ON SCHEMA public FROM public;`
 9. Grant access only to catalog: `# GRANT ALL ON SCHEMA public to catalog;`
