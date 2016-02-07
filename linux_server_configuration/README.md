@@ -39,64 +39,63 @@ grader  ALL=(ALL:ALL) ALL
 ```
 1. Login under user grader
 2. Disable root login. Open sshd_config located in /etc/ssh/ and change **PermitRootLogin without-password** to **PermitRootLogin no**
-3. Restart the ssh service in order for changes to take effect. `$ sudo service ssh restart`
+3. Restart the ssh service in order for changes to take effect: `$ sudo service ssh restart`
 4. To test it out. Try and login under root and you'll get an error
 
 ## Port Configuration
-1. Open the file sshd_config located in /etc/ssh/ `$ nano /etc/ssh/sshd_config`
+1. Open the file sshd_config located in **/etc/ssh/**: `$ nano /etc/ssh/sshd_config`
 2. Change port from 22 to 2200
 
 ## Setup SSH key authentication & disable password authentication
 1. Temporarily allow password authentication by changing `PasswordAuthentication` fron no to yes
-2. Restart ssh by typing `$ service ssh restart`
+2. Restart ssh by typing: `$ service ssh restart`
 3. On your local machine type: `$ ssh-keygen`
-4. This will create a private and public key (.pub) in your .ssh folder in /home/username/.ssh
-5. Copy the contents of the public key you created `$ cat public.pub`
+4. This will create a private and public key (.pub) in your .ssh folder in **/home/username/.ssh**
+5. Copy the contents of the public key you created: `$ cat public.pub`
 6. Log into your virtual server under user grader
-7. Create a folder named .ssh in your home directory `$ mkdrir .ssh`
-8. Inside this folder create a file named `$ touch authorized_keys`
-9. Paste the contents of the ssh public key you copied in the third step into authorized_keys `$ nano authorized_keys`
-10. Disable password authentication by changing **PasswordAuthentication** from no to yes in sshd_config `$ sudo nano /etc/ssh/sshd_config`
+7. Create a folder named .ssh in your home directory: `$ mkdrir .ssh`
+8. Inside this folder create a file named: `$ touch authorized_keys`
+9. Paste the contents of the ssh public key you copied in the third step into authorized_keys: `$ nano authorized_keys`
+10. Disable password authentication by changing **PasswordAuthentication** from no to yes in sshd_config: `$ sudo nano /etc/ssh/sshd_config`
 
 ## Firewall & Timezone Configuration
 A good practice is to disable all connections (incoming/outgoing) before you start configuring your firewall.
 
-1. First check if the firewall is enabled by typing `$ sudo ufw status`
-2. If it is enabled disable it by typing `$ sudo ufw disable`
-3. Disable all incoming connections `$ sudo ufw default deny incoming`
-4. Disable all outgoing connections `$ sudo ufw default deny outgoing`
-5. Allow incoming connections on port 2200 (SSH) `$ sudo ufw allow 2200/tcp`
-6. Allow incoming connections on port 80 (HTTP) `$ sudo ufw allow 80/tcp`
-7. Allow incoming connections on port 123 (NTP) `$ sudo ufw allow 123/udp`
-8. Finally enable the firewall `$ sudo ufw enable`
-9. You can check the status of UFW to see if everything is setup correctly `$ sudo ufw status`
+1. First check if the firewall is enabled by typing: `$ sudo ufw status`
+2. If it is enabled disable it by typing: `$ sudo ufw disable`
+3. Disable all incoming connections: `$ sudo ufw default deny incoming`
+4. Disable all outgoing connections: `$ sudo ufw default deny outgoing`
+5. Allow incoming connections on port 2200 (SSH): `$ sudo ufw allow 2200/tcp`
+6. Allow incoming connections on port 80 (HTTP): `$ sudo ufw allow 80/tcp`
+7. Allow incoming connections on port 123 (NTP): `$ sudo ufw allow 123/udp`
+8. Finally enable the firewall: `$ sudo ufw enable`
+9. You can check the status of UFW to see if everything is setup correctly: `$ sudo ufw status`
 10. Configure the local timezone to UTC `$ sudo timedatectl set-timezone UTC`
 
 ## Setup Cron Job for automatic system updates
 Automatically update the package list and download upgraded packages by using cron-apt
 
 1. To install cron-apt type: `$ sudo apt-get install cron-apt`
-2. Disable daily updates by commenting out the line: *0 4  * * * root test -x /usr/sbin/cron-apt && /usr-sbin/cron-apt* located in /etc/cront.d/cron-apt
+2. Disable daily updates by commenting out the line: *0 4  * * * root test -x /usr/sbin/cron-apt && /usr-sbin/cron-apt* located in **/etc/cront.d/cron-apt**
 3. To run weekly system updates go to /etc/cron.weekly and type: `$ sudo nano auto-update`
-4. Paste the following and make it executable by typing `$ chmod 755 auto-update`:
+4. Paste the following and make it executable by typing: `$ chmod 755 auto-update`:
 ```
 #!/bin/bash
 apt-get update
 apt-get upgrade -y
 apt-get autoclean
 ```
-
 #### Monitor repeated unsuccessful login attempts
-1. Install fail2ban. `$ sudo apt-get install fail2ban`
-2. Rename the default configuration file jail.conf located in /etc/fail2ban/ to jail.local
+1. Install fail2ban: `$ sudo apt-get install fail2ban`
+2. Rename the default configuration file **jail.conf** located in **/etc/fail2ban/** to **jail.local**
 3. Set bantime to 1800
-4. Stop the fail2ban service `$ sudo service fail2ban stop`
-5. Start the fail2ban service `$ sudo service fail2ban start`
+4. Stop the fail2ban service: `$ sudo service fail2ban stop`
+5. Start the fail2ban service: `$ sudo service fail2ban start`
 
 ## Install & Configure Apache & mod_wsgi
-1. Install Apache `$ sudo apt-get install apache2`
+1. Install Apache: `$ sudo apt-get install apache2`
 2. Confirm that Apache works by visiting your public IP. You'll see the "It works!" message
-3. To run Python apps you need to install mod_wsgi `$ sudo apt-get install python-setuptools libapache2-mod-wsgi`
+3. To run Python apps you need to install mod_wsgi: `$ sudo apt-get install python-setuptools libapache2-mod-wsgi`
 4. Restart the Apache server in order to load mod_wsgi: `$ sudo service apache2 restart`
 
 ## Install Git
@@ -112,7 +111,7 @@ apt-get autoclean
 ## Migrate from SQLite to PostgreSQL
 1. Open **setup.py** located in **/var/www/catalog/catalog**
 2. Change the line `engine = create_engine(sqlite:///restaurantsdb.db)` to this `engine = create_engine(postgresql://catalog:type_your_password_here@localhost/catalog)`
-3. Create user catalog `$ sudo adduser catalog`
+3. Create user catalog: `$ sudo adduser catalog`
 
 ## Deploying a Python application on Ubuntu VPS
 1. Install additional Python packages: `$ sudo apt-get install python-dev`
@@ -164,7 +163,7 @@ application.secret_key = 'Add your secret key'
 1. Install PosgresSQL: `$ sudo apt-get install posgresql postgresql-contrib`
 2. Login under user posgres: `$ sudo su - postgres`
 3. Connect to PostgreSQL: `$ psql`
-4. Create user catalog `# CREATE USER catalog WITH PASSWORD 'type_your_password_here';`
+4. Create user catalog: `# CREATE USER catalog WITH PASSWORD 'type_your_password_here';`
 5. Give permissions to user to create tables: `# ALTER USER catalog CREATEDB;`
 6. Create database catalog: `# CREATE DATABASE catalog WITH OWNER catalog`;
 7. Connect to database catalog: `# \c catalog`

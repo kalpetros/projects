@@ -21,6 +21,10 @@ class ConflictException(endpoints.ServiceException):
     """ConflictException -- exception mapped to HTTP 409 response"""
     http_status = httplib.CONFLICT
 
+###################################################
+##################### PROFILE #####################
+###################################################
+
 class Profile(ndb.Model):
     """Profile -- User profile object"""
     displayName = ndb.StringProperty()
@@ -47,6 +51,10 @@ class StringMessage(messages.Message):
 class BooleanMessage(messages.Message):
     """BooleanMessage-- outbound Boolean value message"""
     data = messages.BooleanField(1)
+
+###################################################
+################### CONFERENCE ####################
+###################################################
 
 class Conference(ndb.Model):
     """Conference -- Conference object"""
@@ -79,6 +87,39 @@ class ConferenceForm(messages.Message):
 class ConferenceForms(messages.Message):
     """ConferenceForms -- multiple Conference outbound form message"""
     items = messages.MessageField(ConferenceForm, 1, repeated=True)
+
+###################################################
+##################### SESSION #####################
+###################################################
+
+class Session(ndb.Model):
+    """Session -- Session object"""
+    name          = ndb.StringProperty(required=True)
+    typeOfSession = ndb.StringProperty(required=True)
+    speaker       = ndb.StringProperty(required=True)
+    highlights    = ndb.StringProperty()
+    duration      = ndb.IntegerProperty()
+    date          = ndb.DateProperty()
+    startTime     = ndb.TimeProperty()
+
+class SessionForm(messages.Message):
+    """SessionForm -- Session outbound form message"""
+    name          = messages.StringField(1, required=True)
+    typeOfSession = messages.StringField(2, required=True)
+    speaker       = messages.StringField(3, required=True)
+    highlights    = messages.StringField(4)
+    duration      = messages.IntegerField(5)
+    date          = messages.StringField(6)
+    startTime     = messages.StringField(7) #TimeProperty()
+    websafeKey    = messages.StringField(8)
+
+class SessionForms(messages.Message):
+    """SessionForms -- multiple Sessions outbound form message"""
+    items = messages.MessageField(SessionForm, 1, repeated=True)
+
+###################################################
+###################### EXTRA ######################
+###################################################
 
 class TeeShirtSize(messages.Enum):
     """TeeShirtSize -- t-shirt size enumeration value"""
