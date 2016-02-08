@@ -73,8 +73,8 @@ CONF_DEFAULTS = {
 }
 
 SESS_DEFAULTS = {
-    "typeOfSession": "lecture",
-    "duration": 90  # (90 minutes)
+    "typeOfSession": "workshop",
+    "duration": 120
 }
 
 OPERATORS = {
@@ -762,32 +762,31 @@ class ConferenceApi(remote.Service):
 ###################################################
 
     def _createSessionObject(self, request):
-        """Create or update Session object, returning SessionForm/request."""
+        """Create or update Session"""
 
-        # preload necessary data items
         user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
         user_id = getUserId(user)
 
-        # check for websafeConferenceKey
+        # Check for websafeConferenceKey
         if not request.websafeConferenceKey:
             raise endpoints.BadRequestException("Session 'websafeConferenceKey' field required")
 
-        # copy SessionForm/ProtoRPC Message into dict
+        # Copy SessionForm message into dict
         data = {field.name: getattr(request, field.name) for field in request.all_fields()}
 
-        # process dates and times into strings
+        # Process dates and times into strings
         if data['date']:
             data['date'] = datetime.strptime(data['date'][:10], "%Y-%m-%d").date()
         if data['startTime']:
             data['startTime'] = datetime.strptime(data['startTime'][:10], "%H:%M").time()
 
-        # delete websafeConferenceKey, it is already available as the parent key
+        # Delete websafeConferenceKeyy
         del data['websafeConferenceKey']
         del data['websafeKey']
 
-        # add default values for those missing (both data model & outbound Message)
+        # Add default values
         for df in SESS_DEFAULTS:
             if data[df] in (None, []):
                 data[df] = SESS_DEFAULTS[df]
@@ -796,7 +795,7 @@ class ConferenceApi(remote.Service):
         conf_key = ndb.Key(urlsafe=request.websafeConferenceKey)
         conf = conf_key.get()
 
-        # verify that conf exists and editor is the owner
+        # Verify that conf exists
         if not conf:
             raise endpoints.NotFoundException(
                 'No conference found with key: %s' % request.websafeConferenceKey)
@@ -813,7 +812,7 @@ class ConferenceApi(remote.Service):
         s_key = ndb.Key(Session, s_id, parent=conf_key)
         data['key'] = s_key
 
-        # creation of Session & return a SessionForm
+        # Create Session and return SessionForm
         Session(**data).put()
         return self._copySessionToForm(request)
 
@@ -822,7 +821,7 @@ class ConferenceApi(remote.Service):
         sf = SessionForm()
         for field in sf.all_fields():
             if hasattr(sess, field.name):
-                # convert Date to date string; just copy others
+                # Convert date to date string; just copy others
                 if field.name.endswith('date'):
                     setattr(sf, field.name, str(getattr(sess, field.name)))
                 elif field.name.endswith('Time'):
@@ -848,13 +847,13 @@ class ConferenceApi(remote.Service):
             http_method='GET',
             name='getConferenceSessions')
     def getConferenceSessions(self, request):
-        """Return requested conference sessions (by websafeConferenceKey)."""
-        # get Conference object from request; bail if not found
+        """Return requested conference sessions"""
+        # Get conference object from request
         confKey = ndb.Key(urlsafe=request.websafeConferenceKey)
         conf = confKey.get()
         if not conf:
             raise endpoints.NotFoundException(
-                'No conference found with key: %s' % request.websafeConferenceKey)
+                'Conference with key: %s not found' % request.websafeConferenceKey)
 
         sessions = Session.query(ancestor=confKey).fetch()
 
@@ -867,13 +866,13 @@ class ConferenceApi(remote.Service):
             http_method='GET',
             name='getConferenceSessionsByType')
     def getConferenceSessionsByType(self, request):
-        """Return requested conference sessions (by websafeConferenceKey and typeOfSession)"""
-        # get Conference object from request; bail if not found
+        """Return requested conference sessions"""
+        # Get conference object from request
         confKey = ndb.Key(urlsafe=request.websafeConferenceKey)
         conf = confKey.get()
         if not conf:
             raise endpoints.NotFoundException(
-                'No conference found with key: %s' % request.websafeConferenceKey)
+                'Conference with key: %s not found' % request.websafeConferenceKey)
 
         typeFilter = ndb.query.FilterNode('typeOfSession', '=', request.typeOfSession)
         q = Session.query(ancestor=confKey)
@@ -889,13 +888,13 @@ class ConferenceApi(remote.Service):
             http_method='GET',
             name='getSessionsBySpeaker')
     def getSessionsBySpeaker(self, request):
-        """Return requested conference sessions (by websafeConferenceKey and speaker)"""
-        # get Conference object from request; bail if not found
+        """Return conference sessions"""
+        # Get conference object from request
         confKey = ndb.Key(urlsafe=request.websafeConferenceKey)
         conf = confKey.get()
         if not conf:
             raise endpoints.NotFoundException(
-                'No conference found with key: %s' % request.websafeConferenceKey)
+                'Conference with key: %s not found' % request.websafeConferenceKey)
 
         typeFilter = ndb.query.FilterNode('speaker', '=', request.speaker)
         q = Session.query(ancestor=confKey)
@@ -911,47 +910,48 @@ class ConferenceApi(remote.Service):
 ###################################################
 
     @staticmethod
-    def _cacheFeaturedSpeaker(websafeConferenceKey):
-        """Calculate the featured speaker (by counting session appearances) and cache it."""
-        fSpeaker = None
+    def _featuredSpeakerCache(websafeConferenceKey):
+        """Make a speaker featured and store him in cache"""
+        featuredSpeaker = None
 
-        # get Conference object from request; bail if not found
+		# Get conference object from request
         confKey = ndb.Key(urlsafe=websafeConferenceKey)
         conf = confKey.get()
         if not conf:
             raise endpoints.NotFoundException(
-                'No conference found with key: %s' % websafeConferenceKey)
+                'Conference with key: %s not found' % websafeConferenceKey)
 
         sessions = Session.query(ancestor=confKey).fetch()
 
-        # Find the speaker with the most session appearances. If this person
-        # also appears in at least 2 sessions, make them the featured speaker.
+        # Speaker with most sessions
         speakerAppearances = []
         for s in sessions:
             if s.speaker:
                 speakerAppearances.append(s.speaker)
 
-        appearanceCalc = mostCommonInList(speakerAppearances)
-        speakerWithMostAppearances = appearanceCalc[0]
-        speakerAppearanceCount = appearanceCalc[1]
+        howManyTimes = mostCommonInList(speakerAppearances)
+        speakerWithMostAppearances = howManyTimes[0]
+        speakerAppearanceCount = howManyTimes[1]
 
         featuredSpeakerCacheKey = MEMCACHE_FSPEAKER_PREFIX + slugify(conf.name)
 
+        # If a speaker talks in more than 2 sessions
+        # he becomes a featured speaker
         if speakerAppearanceCount >= 2:
             memcache.set(featuredSpeakerCacheKey, speakerWithMostAppearances)
-            fSpeaker = speakerWithMostAppearances
+            featuredSpeaker = speakerWithMostAppearances
 
-        return fSpeaker
+        return featuredSpeaker
 
     @endpoints.method(FEAT_SPEAKER_REQUEST, StringMessage,
             path='getFeaturedSpeaker/{websafeConferenceKey}',
             http_method='GET',
             name='getFeaturedSpeaker')
     def getFeaturedSpeaker(self, request):
-        """Get the featured speaker stored in the cache"""
-        fSpeaker = None
+        """Get the featured speaker stored in cache"""
+        featuredSpeaker = None
 
-        # get Conference object from request; bail if not found
+        # Get conference object from request
         confKey = ndb.Key(urlsafe=request.websafeConferenceKey)
         conf = confKey.get()
         if not conf:
@@ -959,9 +959,9 @@ class ConferenceApi(remote.Service):
                 'No conference found with key: %s' % request.websafeConferenceKey)
 
         featuredSpeakerCacheKey = MEMCACHE_FSPEAKER_PREFIX + slugify(conf.name)
-        fSpeaker = memcache.get(featuredSpeakerCacheKey)
+        featuredSpeaker = memcache.get(featuredSpeakerCacheKey)
 
-        return StringMessage(data=fSpeaker)
+        return StringMessage(data=featuredSpeaker)
 
 ###################################################
 ################## REGISTER API ###################
