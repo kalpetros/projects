@@ -48,22 +48,32 @@ or a more concrete example:
 ```
 You should only do this for local testing purposes, in which case you can ignore the warning banner displayed in the browser.
 
-## Design decisions
+#### What were your design choices for session and speaker implementation? (Task 1&2)
+The Session class(kind) has the following properties:
 
-#### What were your design choises for session and speaker implementation?
+1. name:
+2. highlights
+3. speakers:
+4. duration:
+5. typeOfSession:
+6. date:
+7. startTime:
 
-The first design decision I took is to model my endpoints (session, speaker) as children of Conference.
+The Speaker class(kind) has only the property **name**.
 
-Also when a user creates a session it is mandatory to include the session's name, type and its speaker because logically a session without those attributes could not exist.
+I've implemented the following endpoints:
 
-#### Think about other types of queries that would be useful for this application. Describe the purpose of 2 new queries and write the code that would perform them.
+1. getConferenceSessions:
+2. getConferenceSessionsByType:
+3. getSessionsBySpeaker:
+4. createSession:
 
-Some usesful queries would be session by type and by speaker in a user's wishlist where the user can filter all the sessions in his wishlist to return the sessions he wants by their type for example (workshops, lectures) or by their speaker.
+#### Think about other types of queries that would be useful for this application. Describe the purpose of 2 new queries and write the code that would perform them. (Task 3)
 
-#### Let’s say that you don't like workshops and you don't like sessions after 7pm. How would you handle a query for all non-workshop sessions before 7pm? What is the problem for implementing this query? What ways to solve it did you think of?
+#### Query related problem
+> Let’s say that you don't like workshops and you don't like sessions after 7pm. How would you handle a query for all non-workshop sessions before 7pm? What is the problem for implementing this query? What ways to solve it did you think of?
 
-The problem is with NDB. With NDB you can query for items for a given date but not for a given time. i.e. You can't return sessions before or after 7pm.
-A workaround to this problem is to create a Python function that after quering for all sessions, excluding workshops you split all sessions into days and remove sessions after 7pm in those days. Then the function merges the sessions and returns a list of sessions before 7pm.
+#### Add a Task (Task 4)
 
 [1]: https://developers.google.com/appengine
 [2]: http://python.org
