@@ -37,13 +37,6 @@ class SendConfirmationEmailHandler(webapp2.RequestHandler):
                 'conferenceInfo')
         )
 
-class SetFeaturedSpeakerHandler(webapp2.RequestHandler):
-    def post(self):
-        """Set Featured Speaker in Memcache."""
-        wsck = self.request.get('websafeConferenceKey')
-        ConferenceApi._cacheFeaturedSpeaker(wsck)
-        self.response.set_status(204)
-
 
 app = webapp2.WSGIApplication([
     ('/crons/set_announcement', SetAnnouncementHandler),
