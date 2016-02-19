@@ -124,7 +124,7 @@ WISHLIST_POST_REQUEST = endpoints.ResourceContainer(
     websafeSessionKey=messages.StringField(1)
 )
 
-SESSION_BY_SPK_GET_REQUEST = endpoints.ResourceContainer(
+SESSION_BY_SPEAKER_GET_REQUEST = endpoints.ResourceContainer(
     SpeakerForm,
     websafeConferenceKey=messages.StringField(1)
 )
@@ -651,7 +651,7 @@ class ConferenceApi(remote.Service):
 # - - - Additional queries (Task 3) - - - - - - - - - - - - - - - - - - -
     
     @endpoints.method(
-            SESSION_BY_SPK_GET_REQUEST, SessionForms,
+            SESSION_BY_SPEAKER_GET_REQUEST, SessionForms,
             path='conference/{websafeConferenceKey}/sessions/bySpeaker',
             http_method='POST', name='getConferenceSessionsBySpeaker')
     def getSessBySpeaker(self, request):
