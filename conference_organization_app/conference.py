@@ -673,7 +673,7 @@ class ConferenceApi(remote.Service):
             path='conference/byCity/{city}',
             http_method='GET',
             name='getConferencesInCity')
-    def getConferencesInCity(self, request):
+    def getConferencesByCity(self, request):
         """Returns all conferences by their city"""
         # Throw an error if city name is not given
         if not request.city:
