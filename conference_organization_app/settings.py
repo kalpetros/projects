@@ -7,7 +7,7 @@ Udacity conference server-side Python App Engine app user settings
 $Id$
 
 created/forked from conference.py by wesc on 2014 may 24
-
+updated by Petros Kalogiannakis on 2016 feb 02
 """
 
 # Replace the following lines with client IDs obtained from the APIs

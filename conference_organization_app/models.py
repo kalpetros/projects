@@ -7,10 +7,10 @@ Udacity conference server-side Python App Engine data & ProtoRPC models
 $Id: models.py,v 1.1 2014/05/24 22:01:10 wesc Exp $
 
 created/forked from conferences.py by wesc on 2014 may 24
-
+updated by Petros Kalogiannakis on 2016 feb 02
 """
 
-__author__ = 'wesc+api@google.com (Wesley Chun)'
+__author__ = 'Wesley Chun, Petros Kalogiannakis'
 
 import httplib
 import endpoints
@@ -40,14 +40,14 @@ class ProfileForm(messages.Message):
     mainEmail = messages.StringField(2)
     teeShirtSize = messages.EnumField('TeeShirtSize', 3)
     conferenceKeysToAttend = messages.StringField(4, repeated=True)
-    sessionsKeysWishlist = ndb.StringProperty(repeated=True)
+    sessionsKeysWishlist = messages.StringField(5, repeated=True)
 
 class StringMessage(messages.Message):
-    """StringMessage-- outbound (single) string message"""
+    """StringMessage -- outbound (single) string message"""
     data = messages.StringField(1, required=True)
 
 class BooleanMessage(messages.Message):
-    """BooleanMessage-- outbound Boolean value message"""
+    """BooleanMessage -- outbound Boolean value message"""
     data = messages.BooleanField(1)
 
 class Conference(ndb.Model):
@@ -106,7 +106,7 @@ class SessionForm(messages.Message):
     highlights      = messages.StringField(2, repeated=True)
     speaker         = messages.StringField(3, repeated=True)
     duration        = messages.StringField(4)
-    typeOfSession   = messages.StringField(5)
+    typeOfSession   = messages.EnumField('SessionType', 5)
     date            = messages.StringField(6)
     startTime       = messages.StringField(7)
     websafeKey      = messages.StringField(8)
@@ -117,7 +117,7 @@ class SessionForms(messages.Message):
     items = messages.MessageField(SessionForm, 1, repeated=True)
 
 class SessionType(messages.Enum):
-    """ TypeOfSession -- session type enumeration value."""
+    """TypeOfSession -- session type enumeration value."""
     NOT_SPECIFIED = 1
     Lecture = 2
     Workshop = 3
