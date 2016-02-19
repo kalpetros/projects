@@ -7,10 +7,10 @@ conference.py -- Udacity conference server-side Python App Engine API;
 $Id: conference.py,v 1.25 2014/05/24 23:42:19 wesc Exp wesc $
 
 created by wesc on 2014 apr 21
-
+updated by Petros Kalogiannakis on 2016 feb 02
 """
 
-__author__ = 'wesc+api@google.com (Wesley Chun)'
+__author__ = 'Wesley Chun, Petros Kalogiannakis'
 
 from datetime import datetime
 
@@ -37,6 +37,9 @@ from models import ConferenceQueryForms
 from models import Session
 from models import SessionForm
 from models import SessionForms
+from models import Speaker
+from models import SpeakerForm
+from models import SessionType
 from models import TeeShirtSize
 
 from settings import WEB_CLIENT_ID
@@ -64,10 +67,10 @@ DEFAULTS = {
 DEFAULTS_SESSION = {
     "highlights": ["Default", "Highlight"],
     "location": "Default Location",
-    "typeOfSession": TypeOfSession("NOT_SPECIFIED"),
-    "date": "1900-01-01",
-    "startTime": "10:00",
-    "duration": "00:00"
+    "typeOfSession": SessionType("Lecture"),
+    "date": "2016-01-01",
+    "duration": "00:00",
+    "startTime": "18:00"
 }
 
 OPERATORS = {
@@ -111,13 +114,32 @@ SESSION_POST_REQUEST = endpoints.ResourceContainer(
     websafeConferenceKey=messages.StringField(1),
 )
 
+WISHLIST_GET_REQUEST = endpoints.ResourceContainer(
+    message_types.VoidMessage,
+    websafeConferenceKey=messages.StringField(1)
+)
+
+WISHLIST_POST_REQUEST = endpoints.ResourceContainer(
+    message_types.VoidMessage,
+    websafeSessionKey=messages.StringField(1)
+)
+
+SESSION_BY_SPK_AND_CONF_GET_REQUEST = endpoints.ResourceContainer(
+    SpeakerForm,
+    websafeConferenceKey=messages.StringField(1)
+)
+
+CONF_IN_CITY_REQUEST = endpoints.ResourceContainer(
+    city=messages.StringField(1)
+)
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 @endpoints.api(name='conference', version='v1', audiences=[ANDROID_AUDIENCE],
     allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID],
     scopes=[EMAIL_SCOPE])
 class ConferenceApi(remote.Service):
-    """Conference API v0.1"""
+    """Conference API v0.5"""
 
 # - - - Conference objects - - - - - - - - - - - - - - - - -
 
