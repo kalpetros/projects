@@ -110,7 +110,7 @@ class SessionForm(messages.Message):
     date            = messages.StringField(6)
     startTime       = messages.StringField(7)
     websafeKey      = messages.StringField(8)
-    websafeConKey   = messages.StringField(9)
+    websafeConferenceKey   = messages.StringField(9)
 
 class SessionForms(messages.Message):
     """SessionForms -- multiple Session outbound form messages"""

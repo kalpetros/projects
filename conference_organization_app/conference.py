@@ -66,7 +66,6 @@ DEFAULTS = {
 
 DEFAULTS_SESSION = {
     "highlights": ["Default", "Highlight"],
-    "location": "Default Location",
     "typeOfSession": SessionType("Lecture"),
     "date": "2016-01-01",
     "duration": "00:00",
@@ -124,7 +123,7 @@ WISHLIST_POST_REQUEST = endpoints.ResourceContainer(
     websafeSessionKey=messages.StringField(1)
 )
 
-SESSION_BY_SPEAKER_GET_REQUEST = endpoints.ResourceContainer(
+SESSION_BY_SPK_GET_REQUEST = endpoints.ResourceContainer(
     SpeakerForm,
     websafeConferenceKey=messages.StringField(1)
 )
@@ -387,9 +386,9 @@ class ConferenceApi(remote.Service):
                 elif field.name == 'duration':
                     setattr(sf, field.name, str(getattr(sess, field.name)))
                 # convert list of Speaker keys to list of strings:
-                elif field.name == 'speakers':
+                elif field.name == 'speaker':
                     setattr(sf, field.name,
-                            [str(s.get().name) for s in sess.speakers])
+                            [str(s.get().name) for s in sess.speaker])
                 # just copy other fields
                 else:
                     setattr(sf, field.name, getattr(sess, field.name))
@@ -428,7 +427,6 @@ class ConferenceApi(remote.Service):
         data = {field.name: getattr(request, field.name) for field in
                 request.all_fields()}
         del data['websafeKey']
-        del data['websafeConfKey']
         del data['websafeConferenceKey']
 
         # Add default values if values are missing
@@ -446,16 +444,16 @@ class ConferenceApi(remote.Service):
             data['startTime'] = datetime.strptime(data['startTime'][:5],"%H:%M").time()
         if data['duration']:
             data['duration'] = datetime.strptime(data['duration'][:5],"%H:%M").time()
-        if data['speakers']:
+        if data['speaker']:
             sess_speakers = []
-            for speaker in data['speakers']:
+            for speaker in data['speaker']:
                 sess_spkr_key = Speaker.get_or_insert(
                      speaker.lower().strip().replace(" ", "_"),
                      name=speaker).key
                 # Add key to sess_speakers
                 sess_speakers.append(sess_spkr_key)
-            # Replace data['speakers'] with sess_speakers list
-            data['speakers'] = sess_speakers
+            # Replace data['speaker'] with sess_speakers list
+            data['speaker'] = sess_speakers
 
         # Get Conference Key
         c_key = conf.key
@@ -550,7 +548,7 @@ class ConferenceApi(remote.Service):
         # Get speaker's key
         speaker_key = self._getSpeakerKey(request)
         # Query all sessions by speaker
-        sessions = Session.query(Session.speakers == speaker_key)
+        sessions = Session.query(Session.speaker == speaker_key)
         # Return SessionForms objects
         return SessionForms(
             items=[self._copySessionToForm(sess) for sess in sessions]
@@ -651,7 +649,7 @@ class ConferenceApi(remote.Service):
 # - - - Additional queries (Task 3) - - - - - - - - - - - - - - - - - - -
     
     @endpoints.method(
-            SESSION_BY_SPEAKER_GET_REQUEST, SessionForms,
+            SESSION_BY_SPK_GET_REQUEST, SessionForms,
             path='conference/{websafeConferenceKey}/sessions/bySpeaker',
             http_method='POST', name='getConferenceSessionsBySpeaker')
     def getSessBySpeaker(self, request):
@@ -663,7 +661,7 @@ class ConferenceApi(remote.Service):
         speaker_key = self._getSpeakerKey(request)
 
         # Filter sessions by speaker
-        speaker_sessions = conference_sessions.filter(Session.speakers == speaker_key)
+        speaker_sessions = conference_sessions.filter(Session.speaker == speaker_key)
 
         return SessionForms(
             items=[self._copySessionToForm(sess) for sess in speaker_sessions]
@@ -673,7 +671,7 @@ class ConferenceApi(remote.Service):
             path='conference/byCity/{city}',
             http_method='GET',
             name='getConferencesInCity')
-    def getConferencesByCity(self, request):
+    def getConferencesInCity(self, request):
         """Returns all conferences by their city"""
         # Throw an error if city name is not given
         if not request.city:
