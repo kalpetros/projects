@@ -468,7 +468,7 @@ class ConferenceApi(remote.Service):
         # get session to copy it back to the form as return
         sess = s_key.get()
         # Add task to queue
-        taskqueue.add(params={'c_key_str': c_key.urlsafe()},url='/tasks/check_speakers')
+        taskqueue.add(params={'c_key_str': c_key.urlsafe()},url='/tasks/check_speaker')
 
         return self._copySessionToForm(sess)
 
