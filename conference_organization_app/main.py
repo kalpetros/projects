@@ -76,7 +76,6 @@ class SpeakerCheck(webapp2.RequestHandler):
 
         MEMCACHE_CONFERENCE_KEY = "FEATURED: %s" % conf_key.urlsafe()
         # Add featured speakers in memcache
-
         for speaker in featured_speakers:
             memcache.set(MEMCACHE_CONFERENCE_KEY, speaker)
 
