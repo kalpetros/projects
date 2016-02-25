@@ -468,7 +468,9 @@ class ConferenceApi(remote.Service):
         # get session to copy it back to the form as return
         sess = s_key.get()
         # Add task to queue
-        taskqueue.add(params={'c_key_str': c_key.urlsafe()},url='/tasks/check_speaker')
+        taskqueue.add(
+            params={'c_keySt': c_key.urlsafe()},
+            url='/tasks/speaker_check')
 
         return self._copySessionToForm(sess)
 
@@ -700,7 +702,7 @@ class ConferenceApi(remote.Service):
         if not conf:
             raise endpoints.NotFoundException('No conference found with key: %s' % wsck)
 
-        MEMCACHE_CONFERENCE_KEY = "FEATURED:%s" % wsck
+        MEMCACHE_CONFERENCE_KEY = "FEATURED: %s" % wsck
         return StringMessage(data=memcache.get(MEMCACHE_CONFERENCE_KEY) or "There are no featured speakers.")
 
 # - - - Profile objects - - - - - - - - - - - - - - - - - - -
