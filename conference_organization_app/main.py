@@ -40,47 +40,14 @@ class SendConfirmationEmailHandler(webapp2.RequestHandler):
                 'conferenceInfo')
         )
 
-class SpeakerCheck(webapp2.RequestHandler):
+class SetFeaturedSpeakerHandler(webapp2.RequestHandler):
     def post(self):
-        """When a new session is added to a conference, check the speaker."""
-        common_speakers = []
-        featured_speakers = []
-        speaker_counter {}
-        # Get conference object from request
-        conf_key = ndb.Key(urlsafe=self.request.get('c_keySt'))
-
-        # Get conference's sessions
-        sessions = Session.query(ancestor=conf_key)
-        # Get speakers
-        speakers = Speaker.query()
-
-        # Add all speakers in the array
-        for session in sessions:
-            if session.speaker:
-                common_speakers.append(session.speaker)
-
-        # Find most common speakers using a dict
-        for speaker in common_speakers:
-            if speaker in speaker_counter:
-                speaker_counter[speaker] += 1
-            else:
-                speaker_counter[speaker] = 1
-
-        # Sort speakers by their sessions (speakers with most sessions are shown first)
-        popular_speakers = sorted(speaker_counter, key = speaker_counter.get, reverse = True)
-
-        # Add speakers with more than 2 session in the featured_speakers array
-        for word, key in speaker_counter.iteritems():
-            if key > 2:
-                featured_speakers.append(word)
-
-        MEMCACHE_CONFERENCE_KEY = "FEATURED: %s" % conf_key.urlsafe()
-        # Add featured speakers in memcache
-        for speaker in featured_speakers:
-            memcache.set(MEMCACHE_CONFERENCE_KEY, speaker)
+        """Set featured speaker in Memcache."""
+        ConferenceApi._cacheFeaturedSpeaker(self.request.get('websafeConferenceKey'))
+        self.response.set_status(204)
 
 app = webapp2.WSGIApplication([
     ('/crons/set_announcement', SetAnnouncementHandler),
     ('/tasks/send_confirmation_email', SendConfirmationEmailHandler),
-    ('/tasks/speaker_check', SpeakerCheck)
+    ('/tasks/featured_speaker', SetFeaturedSpeakerHandler)
 ], debug=True)

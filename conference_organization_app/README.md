@@ -46,7 +46,7 @@ You should only do this for local testing purposes, in which case you can ignore
 #### What were your design choices for session and speaker implementation? (Task 1&2)
 The Session class(kind) has the following properties:
 
-1. name: This is the only required field for a Session since its not logical to have a session withoug a name. Defined as a StringProperty
+1. name: Defined as a StringProperty
 2. highlights: I defined this as repeated since a session can have a lot of highlights. Defined as a StringProperty
 3. speakers: Also repeated since a session can have multiple speakers
 4. duration: The sessions duration. Defined as a TimeProperty
@@ -71,22 +71,21 @@ Endpoints for wishlist:
 
 #### Think about other types of queries that would be useful for this application. Describe the purpose of 2 new queries and write the code that would perform them. (Task 3)
 
-I thought that two useful queries would be to query all conferences by their city and all conferences by their speaker.
+I thought that two useful queries would be to query all conferences by their city and all conferences by their topic.
 
 I've implemented the following endpoints:
 
-1. getSessBySpeaker
+1. getConferenceByTopic
 2. getConferencesByCity
 
-#### Query related problem
-> Let’s say that you don't like workshops and you don't like sessions after 7pm. How would you handle a query for all non-workshop sessions before 7pm? What is the problem for implementing this query? What ways to solve it did you think of?
+#### Let’s say that you don't like workshops and you don't like sessions after 7pm. How would you handle a query for all non-workshop sessions before 7pm? What is the problem for implementing this query? What ways to solve it did you think of?
 
 This query is using two inequality filters. But since an inequality filter can be applied to at most one property the above query would not work.
 
 A proposed solution would be to create two queries with one filter each and then compine the results.
 
 #### Add a Task (Task 4)
-If a speaker has more than 2 sessions then the function SpeakerCheck makes that speaker a featured speaker. Then that speaker gets added in the Memcache.
+If a speaker has more than 2 sessions then the function **_cacheFeaturedSpeaker** makes that speaker a featured speaker. Then that speaker gets added in the Memcache.
 
 I also implemented the endpoint **getFeaturedSpeaker** which takes in the conference key and returns a list of featured speakers for that conference.
 

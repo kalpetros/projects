@@ -7,7 +7,7 @@ Udacity conference server-side Python App Engine data & ProtoRPC models
 $Id: models.py,v 1.1 2014/05/24 22:01:10 wesc Exp $
 
 created/forked from conferences.py by wesc on 2014 may 24
-updated by Petros Kalogiannakis on 2016 feb 02
+updated by Petros Kalogiannakis on 2016 feb 28
 """
 
 __author__ = 'Wesley Chun, Petros Kalogiannakis'
@@ -27,7 +27,7 @@ class Profile(ndb.Model):
     mainEmail = ndb.StringProperty()
     teeShirtSize = ndb.StringProperty(default='NOT_SPECIFIED')
     conferenceKeysToAttend = ndb.StringProperty(repeated=True)
-    sessionsKeysWishlist = ndb.StringProperty(repeated=True)
+    sessWishlist = ndb.StringProperty(repeated=True)
 
 class ProfileMiniForm(messages.Message):
     """ProfileMiniForm -- update Profile form message"""
@@ -40,7 +40,7 @@ class ProfileForm(messages.Message):
     mainEmail = messages.StringField(2)
     teeShirtSize = messages.EnumField('TeeShirtSize', 3)
     conferenceKeysToAttend = messages.StringField(4, repeated=True)
-    sessionsKeysWishlist = messages.StringField(5, repeated=True)
+    sessWishlist = messages.StringField(5, repeated=True)
 
 class StringMessage(messages.Message):
     """StringMessage -- outbound (single) string message"""
@@ -82,19 +82,11 @@ class ConferenceForms(messages.Message):
     """ConferenceForms -- multiple Conference outbound form message"""
     items = messages.MessageField(ConferenceForm, 1, repeated=True)
 
-class Speaker(ndb.Model):
-    """Speaker -- Speaker object"""
-    name = ndb.StringProperty(required=True)
-
-class SpeakerForm(messages.Message):
-    """SpeakerForm -- Speaker outbound form messages"""
-    name = messages.StringField(1, required=True)
-
 class Session(ndb.Model):
     """Session -- Session object"""
-    name            = ndb.StringProperty(required=True)
+    name            = ndb.StringProperty()
     highlights      = ndb.StringProperty(repeated=True)
-    speaker         = ndb.KeyProperty(kind=Speaker, repeated=True)
+    speaker         = ndb.StringProperty()
     duration        = ndb.TimeProperty()
     typeOfSession   = ndb.StringProperty()
     date            = ndb.DateProperty()
@@ -104,23 +96,33 @@ class SessionForm(messages.Message):
     """SessionForm -- Session outbound form message"""
     name            = messages.StringField(1)
     highlights      = messages.StringField(2, repeated=True)
-    speaker         = messages.StringField(3, repeated=True)
+    speaker         = messages.StringField(3)
     duration        = messages.StringField(4)
     typeOfSession   = messages.EnumField('SessionType', 5)
     date            = messages.StringField(6)
     startTime       = messages.StringField(7)
     websafeKey      = messages.StringField(8)
-    websafeConferenceKey   = messages.StringField(9)
+    websafeCnfKey   = messages.StringField(9)
 
 class SessionForms(messages.Message):
     """SessionForms -- multiple Session outbound form messages"""
     items = messages.MessageField(SessionForm, 1, repeated=True)
+
+class ConferenceTopics(messages.Enum):
+    """Topic -- conference type enumeration value."""
+    NOT_SPECIFIED = 1
+    Medical_Innovations = 2
+    Programming_Languages = 3
+    Web_Technologies = 4
+    Movie_Making = 5
+    Health_And_Nutrition = 6
 
 class SessionType(messages.Enum):
     """TypeOfSession -- session type enumeration value."""
     NOT_SPECIFIED = 1
     Lecture = 2
     Workshop = 3
+    Lab = 4
 
 class TeeShirtSize(messages.Enum):
     """TeeShirtSize -- t-shirt size enumeration value"""
