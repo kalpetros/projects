@@ -449,6 +449,10 @@ class ConferenceApi(remote.Service):
         data['key'] = s_key
         # Create Session
         Session(**data).put()
+        # Add task to taskqueue
+        taskqueue.add(params={'websafeConferenceKey': request.websafeConferenceKey},
+            url='/tasks/featured_speaker'
+        )
         # For use in SessionForm
         sess = s_key.get()
 
@@ -599,7 +603,7 @@ class ConferenceApi(remote.Service):
             http_method='GET',
             name='getConferencesByTopic')
     def getConferencesByTopic(self, request):
-        """Return a session by its duration"""
+        """Return a session by its topic"""
         # Throw an error if topic is not given
         if not request.topics:
             raise endpoints.BadRequestException("Conference 'topics' field \

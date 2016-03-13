@@ -19,7 +19,6 @@ from google.appengine.ext import ndb
 from google.appengine.api import memcache
 from conference import ConferenceApi
 from models import Session
-from models import Speaker
 
 class SetAnnouncementHandler(webapp2.RequestHandler):
     def get(self):
