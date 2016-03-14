@@ -53,6 +53,7 @@ from collections import Counter
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 MEMCACHE_ANNOUNCEMENTS_KEY = "RECENT_ANNOUNCEMENTS"
+MEMCACHE_FEATURED_KEY = "FEATURED SPEAKER: "
 ANNOUNCEMENT_TPL = ('Last chance to attend! The following conferences '
                     'are nearly sold out: %s')
 
@@ -642,21 +643,39 @@ class ConferenceApi(remote.Service):
         if not conf:
             raise endpoints.NotFoundException('No conference found with key: %s' % websafeConferenceKey)
 
-        # Array to store all speakers
+        # Empty array
         speaker_list = []
         session = Session.query(ancestor=ndb.Key(urlsafe=websafeConferenceKey))
         sess = session.fetch()
+
+        speaker = None
+        featured = None
         for spkr in sess:
             if spkr.speaker:
                 speaker_list.append(spkr.speaker)
 
-        # Number of occurences for each speaker
-        occurences = Counter(speaker_list)
-        featuredKey = "FEATURED: %s" % websafeConferenceKey
-        if occurences[1] >= 2:
-            featured = ""
-            memcache.set(featuredKey)
-            featured = occurences[0]
+        # Implemented after feedback from Kirk
+		# Counter objects have a dictionary interface except that
+		# they return a zero count for missing items instead
+		# of raising a KeyError
+		speakerArray = []
+	  	appearances = 0
+	  	dict = Counter(speaker_list)
+	  	for key in dict:
+			value = dict[key]
+			if value > appearances:
+	  			appearances = value
+	  			speaker = key
+			# Speaker with most appearances
+  			speakerArray = [speaker, appearances]
+
+        featuredSpeaker = speakerArray[0]
+        speakerAppearances = speakerArray[1]
+
+        if speakerAppearances >= 2:
+        	memcache.set(MEMCACHE_FEATURED_KEY, featuredSpeaker)
+        	featured = featuredSpeaker
+
         return featured
 
     @endpoints.method(FEATURED_REQUEST, StringMessage,
@@ -665,14 +684,9 @@ class ConferenceApi(remote.Service):
             name='getFeaturedSpeaker')
     def getFeaturedSpeaker(self, request):
         """Return featured speaker"""
-        conf = ndb.Key(urlsafe=request.websafeConferenceKey).get()
-        if not conf:
-            raise endpoints.NotFoundException('No conference found with key: %s' % request.websafeConferenceKey)
-
-        featuredKey = "FEATURED: %s" % request.websafeConferenceKey
-        featured = memcache.get(featuredKey)
+        featured = memcache.get(MEMCACHE_FEATURED_KEY)
         if not featured:
-            featured = 'There are 0 featured speakers'
+        	featured = "There are 0 featured speakers"
         return StringMessage(data=featured)
 
 # - - - Profile objects - - - - - - - - - - - - - - - - - - -
